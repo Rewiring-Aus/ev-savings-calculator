@@ -1,0 +1,1090 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Petrol Bowser Sign</title>
+
+  <!-- 7-segment LED display font (used in config inputs) -->
+  <link href="https://cdn.jsdelivr.net/npm/dseg@0.46.0/css/dseg.css" rel="stylesheet">
+  <!-- Kode Mono (used for sign price digits) -->
+  <link href="https://fonts.googleapis.com/css2?family=Kode+Mono:wght@400;700&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <!-- Rough.js for hand-drawn annotations -->
+  <script src="https://cdn.jsdelivr.net/npm/roughjs@4.6.6/bundled/rough.min.js"></script>
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      min-height: 100vh;
+      background: linear-gradient(175deg, #9db8cc 0%, #b8cfd8 45%, #c4c8b4 70%, #b8b49a 100%);
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      font-family: 'Arial Narrow', Arial, sans-serif;
+      gap: 60px;
+      padding: 40px;
+      flex-wrap: wrap;
+    }
+
+    /* ── 3-D scene ──────────────────────────────────────────────── */
+    .scene {
+      perspective: 1600px;
+      perspective-origin: 65% 70%;
+    }
+
+    .sign-wrap {
+      transform: rotateY(-8deg) rotateX(4deg);
+      transform-style: preserve-3d;
+      position: relative;
+      filter:
+        drop-shadow(16px 28px 32px rgba(0,0,0,0.50))
+        drop-shadow(0px  4px  6px rgba(0,0,0,0.25));
+    }
+
+    /* ── Sign face ──────────────────────────────────────────────── */
+    .sign-face {
+      width: 290px;
+      border-radius: 4px 4px 3px 3px;
+      overflow: hidden;
+      box-shadow:
+        inset 3px  4px 10px rgba(255,255,255,0.30),
+        inset -3px -4px 10px rgba(0,0,0,0.15);
+    }
+
+    /* ── Right-hand depth face ──────────────────────────────────── */
+    .sign-depth {
+      position: absolute;
+      top: 0; right: 0;
+      width: 22px; height: 100%;
+      background: linear-gradient(90deg, #888 0%, #666 100%);
+      transform: rotateY(90deg);
+      transform-origin: right center;
+      backface-visibility: hidden;
+    }
+
+    /* ── Logo panel ─────────────────────────────────────────────── */
+    .logo-panel {
+      background: linear-gradient(150deg, #f0cf61 0%, #f0cf61 55%, #f0cf61 100%);
+      padding: 22px 20px 20px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border-bottom: 3px solid #b8b7b5;
+      position: relative;
+    }
+
+    .logo-panel::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(125deg, rgba(255,255,255,0.42) 0%, transparent 45%);
+      pointer-events: none;
+    }
+
+    .logo-svg {
+      width: 110px; height: 110px;
+      filter: drop-shadow(0 3px 8px rgba(0,0,0,0.22));
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ── Price rows ─────────────────────────────────────────────── */
+    .price-row {
+      border-bottom: 2px solid #b2b1af;
+      background: linear-gradient(150deg, #e6e5e3 0%, #d5d4d2 100%);
+      padding: 0;
+      position: relative;
+    }
+
+    .price-row::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(120deg, rgba(255,255,255,0.18) 0%, transparent 40%);
+      pointer-events: none;
+    }
+
+    .row-inner {
+      display: flex;
+      align-items: center;
+      padding: 6px 8px;
+      gap: 8px;
+    }
+
+    .row-label-block {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .label-type {
+      font-size: 13px;
+      font-weight: 700;
+      color: #4a00c3;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      line-height: 1.2;
+    }
+
+    .label-unit {
+      font-size: 9px;
+      font-weight: 700;
+      color: #4a00c3;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      opacity: 0.7;
+    }
+
+    /* ── LED display ────────────────────────────────────────────── */
+    .led-display {
+      background: #0a0a0a;
+      border-radius: 3px;
+      border: 1.5px solid #252525;
+      padding: 5px 10px 5px 8px;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      position: relative;
+      overflow: hidden;
+      box-shadow: inset 0 3px 6px rgba(0,0,0,0.6);
+      width: 170px;
+      flex-shrink: 0;
+    }
+
+    .led-display::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 35%;
+      background: linear-gradient(180deg, rgba(255,255,255,0.05) 0%, transparent 100%);
+      pointer-events: none;
+    }
+
+    .led-digits {
+      font-family: 'Kode Mono', monospace;
+      font-size: 50px;
+      font-weight: 300;
+      color: #ff2200;
+      text-shadow:
+        0 0  4px #ff4422,
+        0 0 10px #ff2200,
+        0 0 20px rgba(255, 60,  0, 0.70),
+        0 0 40px rgba(255,  0,  0, 0.35),
+        0 0 70px rgba(200,  0,  0, 0.15);
+      line-height: 1;
+      letter-spacing: 1px;
+      animation: led-breathe 3.5s ease-in-out infinite;
+    }
+
+    .led-dot {
+      letter-spacing: -6px;
+      margin-left: -4px;
+    }
+
+    @keyframes led-breathe {
+      0%, 100% { opacity: 1.00; }
+      50%       { opacity: 0.92; }
+    }
+
+    /* ── Brand strip ────────────────────────────────────────────── */
+    .brand-panel {
+      background: linear-gradient(150deg, #4a00c3 0%, #2a00a3 100%);
+      padding: 13px 16px 12px;
+      text-align: center;
+      border-top: 3px solid #f0cf61;
+      position: relative;
+    }
+
+    .brand-panel::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(125deg, rgba(255,255,255,0.14) 0%, transparent 50%);
+      pointer-events: none;
+    }
+
+    .brand-name {
+      color: #ffffff;
+      font-size: 20px;
+      font-weight: 900;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      text-shadow: 0 1px 4px rgba(0,0,0,0.35);
+    }
+
+    .brand-sub {
+      color: rgba(255,255,255,0.75);
+      font-size: 9px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      margin-top: 3px;
+    }
+
+    .sign-column {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .prices-panel {
+      font-family: 'Roboto', sans-serif;
+      font-weight: 300;
+      color: #555;
+      font-size: 12px;
+      margin-top: 16px;
+      width: 100%;
+      max-width: 320px;
+    }
+
+    .prices-panel h3 {
+      font-size: 10px;
+      font-weight: 500;
+      color: #4a00c3;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .prices-panel h3 .arrow {
+      display: inline-block;
+      font-size: 8px;
+      transition: transform 0.2s;
+      margin-left: 4px;
+    }
+
+    .prices-panel h3.open .arrow {
+      transform: rotate(90deg);
+    }
+
+    .prices-panel .prices-body {
+      display: none;
+      margin-top: 8px;
+    }
+
+    .prices-panel .prices-body.open {
+      display: block;
+    }
+
+    /* ── Config panel ───────────────────────────────────────────── */
+    .config-panel {
+      font-family: 'Roboto', sans-serif;
+      font-weight: 300;
+      color: #333;
+      padding: 8px 0;
+      font-size: 13px;
+      width: 320px;
+    }
+
+    .config-heading {
+      font-family: 'Roboto', sans-serif;
+      font-size: 28px;
+      font-weight: 700;
+      color: #222;
+      line-height: 1.2;
+      margin-bottom: 24px;
+    }
+
+    .hero-text {
+      font-size: 18px;
+      font-weight: 300;
+      color: #333;
+      line-height: 1.4;
+      margin-bottom: 8px;
+    }
+
+    .hero-vehicle-wrap {
+      position: relative;
+      display: inline;
+      padding: 4px;
+    }
+
+    .hero-select {
+      font-family: 'Roboto', sans-serif;
+      font-weight: 400;
+      font-size: 18px;
+      color: #4a00c3;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      appearance: auto;
+      padding: 6px 8px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-select:focus { outline: none; }
+
+    .hero-select optgroup {
+      font-size: 13px;
+      font-weight: 500;
+      color: #666;
+    }
+
+    .hero-select option {
+      font-size: 15px;
+      font-weight: 400;
+      color: #333;
+    }
+
+    .rough-box-svg {
+      position: absolute;
+      top: 0;
+      left: 0;
+      pointer-events: none;
+    }
+
+    .rough-inline-wrap {
+      position: relative;
+      display: inline-block;
+      padding: 2px 4px;
+    }
+
+    .rough-highlight-svg {
+      position: absolute;
+      top: 0;
+      left: 0;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .savings-row.total .label,
+    .savings-row.total .amount {
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-eff {
+      font-size: 14px;
+      font-weight: 300;
+      color: #555;
+      margin-bottom: 4px;
+    }
+
+    .ev-equiv {
+      margin-top: 20px;
+      padding-top: 16px;
+      border-top: 1px solid rgba(0,0,0,0.08);
+    }
+
+    .ev-equiv-label {
+      font-size: 16px;
+      font-weight: 300;
+      color: #333;
+      line-height: 1.4;
+      margin-bottom: 4px;
+    }
+
+    .ev-equiv-label strong {
+      font-weight: 500;
+      color: #4a00c3;
+    }
+
+    .config-section {
+      margin-bottom: 16px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid rgba(0,0,0,0.08);
+    }
+
+    .config-section:last-child {
+      border-bottom: none;
+      margin-bottom: 0;
+      padding-bottom: 0;
+    }
+
+    .config-section h3 {
+      font-size: 10px;
+      font-weight: 500;
+      color: #4a00c3;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+
+    .price-entry {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 7px;
+    }
+
+    .price-entry:last-child { margin-bottom: 0; }
+
+    .price-entry input[type="checkbox"] {
+      width: 15px; height: 15px;
+      accent-color: #ff4422;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    .price-entry .entry-label {
+      flex: 1;
+      font-size: 12px;
+      color: #444;
+      line-height: 1.3;
+    }
+
+    .price-entry .entry-label .raw-unit {
+      display: block;
+      font-size: 9px;
+      color: #888;
+      letter-spacing: 0.05em;
+    }
+
+    input.price-input {
+      font-family: 'Roboto', sans-serif;
+      font-weight: 400;
+      width: 68px;
+      padding: 4px 7px;
+      background: #fff;
+      border: 1px solid #ccc;
+      color: #4a00c3;
+      border-radius: 4px;
+      font-size: 13px;
+      text-align: right;
+      flex-shrink: 0;
+    }
+
+    input.price-input:focus {
+      outline: none;
+      border-color: #4a00c3;
+      box-shadow: 0 0 0 2px rgba(74,0,195,0.15);
+    }
+
+    .config-note {
+      font-size: 11px;
+      color: #777;
+      margin-top: 14px;
+      line-height: 1.55;
+      font-style: italic;
+    }
+
+    .config-explainer {
+      font-size: 11px;
+      color: #777;
+      line-height: 1.5;
+      margin-top: 8px;
+    }
+
+    .hero-inline-select {
+      font-family: 'Roboto', sans-serif;
+      font-weight: 400;
+      font-size: 18px;
+      color: #4a00c3;
+      background: transparent;
+      border: none;
+      border-bottom: 2px solid #4a00c3;
+      cursor: pointer;
+      appearance: auto;
+      padding: 2px 4px;
+    }
+
+    .hero-inline-select:focus { outline: none; }
+
+    .hero-inline-select option {
+      font-size: 15px;
+      font-weight: 400;
+      color: #333;
+    }
+
+    .savings-box {
+      margin-top: 20px;
+      padding: 16px;
+      background: rgba(74, 0, 195, 0.04);
+      border-radius: 8px;
+      position: relative;
+    }
+
+    .savings-title {
+      font-size: 11px;
+      font-weight: 500;
+      color: #4a00c3;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+
+    .savings-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 6px;
+      font-size: 14px;
+    }
+
+    .savings-row .label {
+      font-weight: 300;
+      color: #555;
+    }
+
+    .savings-row .amount {
+      font-weight: 400;
+      color: #333;
+    }
+
+    .savings-row.total {
+      margin-top: 10px;
+      padding-top: 10px;
+      border-top: 1px solid rgba(74, 0, 195, 0.15);
+      font-size: 20px;
+    }
+
+    .savings-row.total .label {
+      font-weight: 400;
+      color: #333;
+    }
+
+    .savings-row.total .amount {
+      font-weight: 500;
+      color: #4a00c3;
+    }
+
+    .savings-breakdown {
+      font-size: 10px;
+      color: #888;
+      margin-top: 8px;
+      line-height: 1.5;
+    }
+
+    .prices-toggle {
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .prices-toggle .arrow {
+      display: inline-block;
+      font-size: 8px;
+      transition: transform 0.2s;
+      margin-left: 4px;
+    }
+
+    .prices-toggle.open .arrow {
+      transform: rotate(90deg);
+    }
+
+    .prices-body {
+      display: none;
+      margin-top: 10px;
+    }
+
+    .prices-body.open {
+      display: block;
+    }
+
+  </style>
+</head>
+<body>
+
+  <!-- ── Sign column (sign + prices underneath) ────────── -->
+  <div class="sign-column">
+    <div class="scene">
+      <div class="sign-wrap">
+        <div class="sign-face">
+
+          <div class="logo-panel">
+            <svg class="logo-svg" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <radialGradient id="g1" cx="38%" cy="28%" r="72%">
+                  <stop offset="0%"   stop-color="#FFE600"/>
+                  <stop offset="48%"  stop-color="#FF8800"/>
+                  <stop offset="100%" stop-color="#CC1800"/>
+                </radialGradient>
+                <radialGradient id="g2" cx="35%" cy="25%" r="60%">
+                  <stop offset="0%"   stop-color="rgba(255,255,255,0.45)"/>
+                  <stop offset="100%" stop-color="rgba(255,255,255,0)"/>
+                </radialGradient>
+                <filter id="fs">
+                  <feDropShadow dx="0" dy="3" stdDeviation="4" flood-color="#000" flood-opacity="0.28"/>
+                </filter>
+              </defs>
+              <circle cx="60" cy="60" r="56" fill="#cc1111" opacity="0.12"/>
+              <path d="M60 6 C60 6, 102 50, 102 72 C102 95 83 114 60 114 C37 114 18 95 18 72 C18 50 60 6 60 6Z"
+                    fill="url(#g1)" filter="url(#fs)"/>
+              <path d="M60 6 C60 6, 102 50, 102 72 C102 95 83 114 60 114 C37 114 18 95 18 72 C18 50 60 6 60 6Z"
+                    fill="url(#g2)"/>
+              <path d="M67 24 L50 66 L64 66 L53 96 L76 54 L62 54 Z"
+                    fill="white" opacity="0.93"/>
+            </svg>
+          </div>
+
+          <div id="price-rows"></div>
+
+          <div class="brand-panel">
+            <div class="brand-name">Rewiring Australia</div>
+            <div class="brand-sub">How much higher will petrol go?</div>
+          </div>
+
+        </div>
+        <div class="sign-depth"></div>
+      </div>
+    </div>
+    <div id="pricesPanel" class="prices-panel"></div>
+  </div>
+
+  <!-- ── Config panel ──────────────────────────────────────── -->
+  <div class="config-panel" id="configPanel"></div>
+
+  <script>
+    // ─── Vehicle type data ───────────────────────────────────────────────────
+    // Columns: small, med/large, sm/med SUV, large SUV, ute, van
+    const vtypes = [
+      { id: 'small',    label: 'Small car',         examples: 'Corolla, i30, Mazda3, Swift',       evKwh: 14, evExamples: 'BYD Dolphin, MG4',                    defaultKmYear: 11000 },
+      { id: 'medlarge', label: 'Medium / large car', examples: 'Camry, Commodore, Falcon, Accord',  evKwh: 16, evExamples: 'Tesla Model 3, BYD Seal',             defaultKmYear: 12000 },
+      { id: 'smsuv',    label: 'Small / medium SUV', examples: 'RAV4, CX-5, Tucson, X-Trail',       evKwh: 17, evExamples: 'Tesla Model Y, BYD Atto 3, Ioniq 5',  defaultKmYear: 12500 },
+      { id: 'lgsuv',    label: 'Large SUV / 4WD',    examples: 'LandCruiser, Prado, Kluger, Patrol', evKwh: 22, evExamples: 'BMW iX, Kia EV9',                     defaultKmYear: 14000 },
+      { id: 'ute',      label: 'Ute / pickup',       examples: 'HiLux, Ranger, Triton, D-Max',      evKwh: 25, evExamples: 'EV ute (est.)',                        defaultKmYear: 15000 },
+      { id: 'van',      label: 'Van / people mover', examples: 'HiAce, Carnival, Transit, Staria',  evKwh: 25, evExamples: 'LDV eDeliver 9, Mercedes eVito',       defaultKmYear: 15000 },
+    ];
+
+    // Petrol L/100km lookup: petrolTable[year][typeIdx]
+    const petrolTable = {
+      1996:[11.2,14.6,12.6,17.4,16.8,16.2],1997:[11.2,14.5,12.1,16.7,16.8,16.1],1998:[11.3,14.6,11.8,16.2,16.8,15.9],
+      1999:[11.3,14.4,11.7,16.2,16.8,15.8],2000:[11.2,13.9,11.8,16.2,16.8,15.6],2001:[11.3,14.3,11.5,15.9,16.7,15.5],
+      2002:[11.2,14.0,11.6,15.9,16.6,15.3],2003:[10.9,14.1,11.6,16.0,16.5,15.2],2004:[10.8,14.0,11.5,15.9,16.3,15.0],
+      2005:[10.5,13.5,11.1,15.3,15.7,14.5],2006:[10.0,12.9,10.6,14.6,15.1,13.9],2007:[9.8,12.6,10.4,14.3,14.7,13.5],
+      2008:[9.6,12.4,10.2,14.1,14.5,13.3],2009:[9.5,12.2,10.0,13.8,14.2,13.1],2010:[9.2,11.9,9.8,13.5,13.9,12.8],
+      2011:[9.0,11.6,9.5,13.1,13.5,12.4],2012:[8.6,11.1,9.1,12.6,13.0,11.9],2013:[8.3,10.7,8.8,12.2,12.5,11.5],
+      2014:[8.1,10.5,8.6,11.9,12.2,11.2],2015:[7.9,10.3,8.4,11.6,12.0,11.0],2016:[7.9,10.1,8.3,11.5,11.8,10.9],
+      2017:[7.8,10.1,8.3,11.4,11.8,10.8],2018:[7.8,10.0,8.2,11.4,11.7,10.8],2019:[7.7,9.9,8.2,11.3,11.6,10.7],
+      2020:[7.7,9.9,8.1,11.2,11.5,10.6],2021:[7.5,9.7,8.0,11.0,11.3,10.4],2022:[7.4,9.6,7.9,10.8,11.2,10.3],
+      2023:[7.1,9.1,7.5,10.3,10.6,9.8],2024:[6.8,8.8,7.2,9.9,10.2,9.4],
+    };
+
+    // Diesel L/100km lookup: dieselTable[year][typeIdx]
+    const dieselTable = {
+      1996:[9.6,12.5,10.8,14.9,14.4,13.7],1997:[9.6,12.4,10.3,14.3,14.4,13.7],1998:[9.6,12.5,10.1,13.9,14.4,13.5],
+      1999:[9.6,12.4,10.0,13.9,14.4,13.4],2000:[9.6,11.9,10.1,13.9,14.4,13.2],2001:[9.6,12.3,9.8,13.6,14.3,13.2],
+      2002:[9.6,12.0,9.9,13.6,14.2,13.0],2003:[9.3,12.1,9.9,13.7,14.1,12.9],2004:[9.2,11.9,9.8,13.5,13.9,12.8],
+      2005:[8.9,11.5,9.5,13.1,13.4,12.4],2006:[8.5,11.0,9.1,12.5,12.9,11.8],2007:[8.3,10.8,8.9,12.2,12.6,11.6],
+      2008:[8.2,10.6,8.7,12.0,12.4,11.4],2009:[8.1,10.4,8.6,11.8,12.2,11.2],2010:[7.9,10.1,8.3,11.5,11.8,10.9],
+      2011:[7.7,9.9,8.1,11.2,11.5,10.6],2012:[7.4,9.5,7.8,10.8,11.1,10.2],2013:[7.1,9.2,7.5,10.4,10.7,9.8],
+      2014:[6.9,8.9,7.3,10.1,10.4,9.6],2015:[6.8,8.8,7.2,9.9,10.2,9.4],2016:[6.7,8.7,7.1,9.8,10.1,9.3],
+      2017:[6.7,8.6,7.1,9.8,10.1,9.3],2018:[6.6,8.5,7.0,9.7,10.0,9.2],2019:[6.6,8.5,7.0,9.6,9.9,9.1],
+      2020:[6.5,8.4,6.9,9.6,9.8,9.1],2021:[6.4,8.3,6.8,9.4,9.7,8.9],2022:[6.3,8.2,6.7,9.3,9.5,8.8],
+      2023:[6.0,7.8,6.4,8.8,9.1,8.4],2024:[5.8,7.5,6.1,8.5,8.7,8.0],
+    };
+
+    // Fuel type defaults per spec: returns 'petrol', 'diesel', or 'ask' (with a preselect)
+    function defaultFuelType(typeIdx, year) {
+      if (typeIdx <= 1) return 'petrol';                    // small, med/large: always petrol
+      if (typeIdx === 2) return year >= 2012 ? 'ask' : 'petrol'; // sm/med SUV: ask from 2012
+      if (typeIdx === 3) return 'ask';                       // large SUV: always ask
+      if (typeIdx === 4) return year >= 2006 ? 'diesel' : 'petrol'; // ute: diesel from 2006
+      return 'ask';                                          // van: always ask
+    }
+
+    function defaultFuelPreselect(typeIdx) {
+      if (typeIdx === 3 || typeIdx === 5) return 'diesel';   // large SUV, van: pre-select diesel
+      return 'petrol';
+    }
+
+    // ─── Fuel price data ──────────────────────────────────────────────────────
+    const fuelRows = [
+      { fuelType: 'petrol', name: 'Diesel',            rawUnit: '¢ / L',   rawPrice: 295.1, visible: true },
+      { fuelType: 'petrol', name: 'Premium 98 Unleaded',  rawUnit: '¢ / L',   rawPrice: 270.1, visible: true },
+      { fuelType: 'petrol', name: 'E10 Unleaded',      rawUnit: '¢ / L',   rawPrice: 242.4, visible: true },
+      { fuelType: 'ev',     name: 'Fast Charger',     rawUnit: '¢ / kWh', rawPrice: 65.0,  visible: true },
+      { fuelType: 'ev',     name: 'Charge from Grid', rawUnit: '¢ / kWh', rawPrice: 30.0,  visible: true },
+      { fuelType: 'ev',     name: 'Solar Power',      rawUnit: '¢ / kWh', rawPrice: 5.0,   visible: true },
+      { fuelType: 'ev',     name: 'Solar Sharer (3hrs free)', rawUnit: '¢ / kWh', rawPrice: 0.0, visible: true },
+    ];
+
+    // ─── App state ────────────────────────────────────────────────────────────
+    const kmOptions = [
+      { label: 'not much — about 100km', km: 100 },
+      { label: 'about 230km (average)',   km: 230 },
+      { label: 'a lot — about 400km',    km: 400 },
+      { label: 'heaps — 600km+',         km: 600 },
+      { label: 'custom…',                km: null },
+    ];
+
+    const fuelOptions = [
+      { id: 'e10',      label: 'E10',          rowName: 'E10 Unleaded',        isDiesel: false },
+      { id: 'premium',  label: 'Premium 98',   rowName: 'Premium 98 Unleaded', isDiesel: false },
+      { id: 'diesel',   label: 'Diesel',       rowName: 'Diesel',              isDiesel: true  },
+    ];
+
+    const state = {
+      typeIdx:  2,       // default: small/med SUV (most popular)
+      year:     2017,
+      fuelIdx:  0,       // index into fuelOptions
+      kmIdx:    1,        // 230km/week
+      customKm: 300,      // default custom value
+      hasSolar: true,
+    };
+
+    // ─── Helpers ──────────────────────────────────────────────────────────────
+    function lookupEff() {
+      const clampedYear = Math.max(1996, Math.min(2024, state.year));
+      const table = fuelOptions[state.fuelIdx].isDiesel ? dieselTable : petrolTable;
+      return table[clampedYear][state.typeIdx];
+    }
+
+    function petrolEff() { return lookupEff(); }
+    function evEff()     { return vtypes[state.typeIdx].evKwh; }
+
+    // Petrol rows → raw ¢/L price, shown as-is.
+    // EV rows → ¢ cost of the kWh needed to travel as far as 1L of petrol in the
+    //           selected car:  ev_price (¢/kWh) × ev_eff (kWh/100km) ÷ petrol_eff (L/100km)
+    function displayValue(row) {
+      if (row.fuelType === 'petrol') return row.rawPrice;
+      return row.rawPrice * evEff() / petrolEff();
+    }
+
+    function displayUnit(row) {
+      return row.fuelType === 'petrol' ? '¢ / L' : '¢ / L eq';
+    }
+
+    // ─── Price spin-up animation ────────────────────────────────────────────
+    // Petrol rows spin from ~190 up to their real price over ~10s with an
+    // ease-out feel (fast at first, gradually slowing down like a wheel).
+    const SPIN_DURATION = 10000;          // ms
+    const SPIN_START    = 190.0;          // starting price for petrol rows
+    let spinStart       = null;           // timestamp
+    let spinDone        = false;
+    const animOverrides = new Map();      // row name → current animated value
+
+    // Exponential ease-out: fast start, long tail
+    function easeOutExpo(t) {
+      return t >= 1 ? 1 : 1 - Math.pow(2, -8 * t);
+    }
+
+    function tickSpin(ts) {
+      if (spinStart === null) spinStart = ts;
+      const elapsed = ts - spinStart;
+      const t = Math.min(elapsed / SPIN_DURATION, 1);
+      const eased = easeOutExpo(t);
+
+      fuelRows.forEach(row => {
+        if (row.fuelType !== 'petrol') return;
+        const target = row.rawPrice;
+        // Add a small per-row random jitter to the digits while spinning
+        const base = SPIN_START + (target - SPIN_START) * eased;
+        if (t < 1) {
+          // jitter that shrinks as we approach the target
+          const jitter = (1 - eased) * (Math.random() - 0.5) * 4;
+          animOverrides.set(row.name, Math.max(0, base + jitter));
+        } else {
+          animOverrides.set(row.name, target);
+        }
+      });
+
+      renderSign();
+
+      if (t < 1) {
+        requestAnimationFrame(tickSpin);
+      } else {
+        spinDone = true;
+        animOverrides.clear();
+        renderSign();
+      }
+    }
+
+    // ─── Render sign ─────────────────────────────────────────────────────────
+    function renderSign() {
+      const container = document.getElementById('price-rows');
+      container.innerHTML = '';
+
+      fuelRows.forEach(row => {
+        if (!row.visible) return;
+        // Use animated override while spinning, otherwise real value
+        let val;
+        if (animOverrides.has(row.name)) {
+          val = animOverrides.get(row.name);
+        } else {
+          val = displayValue(row);
+        }
+        const el = document.createElement('div');
+        el.className = 'price-row';
+        el.innerHTML = `
+          <div class="row-inner">
+            <div class="row-label-block">
+              <div class="label-type">${row.name}</div>
+              <div class="label-unit">${displayUnit(row)}</div>
+            </div>
+            <div class="led-display">
+              <span class="led-digits">${val.toFixed(1).replace('.', '<span class="led-dot">.</span>')}</span>
+            </div>
+          </div>
+        `;
+        container.appendChild(el);
+      });
+    }
+
+    // ─── Render config ────────────────────────────────────────────────────────
+    function renderConfig() {
+      const vt = vtypes[state.typeIdx];
+      const fo = fuelOptions[state.fuelIdx];
+
+      // Year range: 1996 to 2024
+      const years = [];
+      for (let y = 2024; y >= 1996; y--) years.push(y);
+
+      // ── Savings calculation ──
+      const kmWeek = kmOptions[state.kmIdx].km ?? state.customKm;
+      const kmYear = kmWeek * 52;
+      const fuelPrice = fuelRows.find(r => r.name === fo.rowName).rawPrice;
+      const fastPrice = fuelRows.find(r => r.name === 'Fast Charger').rawPrice;
+      const gridPrice = fuelRows.find(r => r.name === 'Charge from Grid').rawPrice;
+      const solarPrice = fuelRows.find(r => r.name === 'Solar Power').rawPrice;
+
+      const litresYear = kmYear * petrolEff() / 100;
+      const fuelCostYear = litresYear * fuelPrice / 100;
+
+      const kwhYear = kmYear * evEff() / 100;
+      const fastPct = 0.05;
+      const gridPct = state.hasSolar ? 0.25 : 0.95;
+      const solarPct = state.hasSolar ? 0.70 : 0.00;
+      const evCostYear = kwhYear * (
+        fastPct * fastPrice + gridPct * gridPrice + solarPct * solarPrice
+      ) / 100;
+
+      const savingsYear = fuelCostYear - evCostYear;
+      const fmt$ = (v) => '$' + Math.round(v).toLocaleString();
+      const fuelLabel = fo.label;
+
+      document.getElementById('configPanel').innerHTML = `
+        <h1 class="config-heading">How much could you save switching to electric?</h1>
+        <p class="hero-text">
+          My car is a
+          <span class="hero-vehicle-wrap" data-rough="type">
+            <select class="hero-select" onchange="setType(this.value)">
+              ${vtypes.map((vt, i) =>
+                `<option value="${i}"${i === state.typeIdx ? ' selected' : ''}>${vt.label}</option>`
+              ).join('')}
+            </select>
+            <svg class="rough-box-svg"></svg>
+          </span>
+        </p>
+        <p class="hero-text" style="margin-top: 8px;">
+          made in 
+          <span class="rough-inline-wrap" data-rough="year">
+            <select class="hero-inline-select" onchange="setYear(this.value)">
+              ${years.map(y =>
+                `<option value="${y}"${y === state.year ? ' selected' : ''}>${y}</option>`
+              ).join('')}
+            </select>
+            <svg class="rough-box-svg"></svg>
+          </span>
+          <span class="hero-eff" style="margin-left: 4px;">(${petrolEff().toFixed(1)} L/100km)</span>
+        </p>
+        <p class="hero-text" style="margin-top: 8px;">
+          that I fill up with
+          <span class="rough-inline-wrap" data-rough="fuel">
+            <select class="hero-inline-select" onchange="setFuel(this.value)">
+              ${fuelOptions.map((f, i) =>
+                `<option value="${i}"${i === state.fuelIdx ? ' selected' : ''}>${f.label}</option>`
+              ).join('')}
+            </select>
+            <svg class="rough-box-svg"></svg>
+          </span>
+        </p>
+
+        <p class="hero-text" style="margin-top: 16px;">
+          I normally drive
+          <span class="rough-inline-wrap" data-rough="km">
+            <select class="hero-inline-select" onchange="setKm(this.value)">
+              ${kmOptions.map((k, i) =>
+                `<option value="${i}"${i === state.kmIdx ? ' selected' : ''}>${k.label}</option>`
+              ).join('')}
+            </select>
+            <svg class="rough-box-svg"></svg>
+          </span>
+          ${kmOptions[state.kmIdx].km === null ? `
+          <span class="rough-inline-wrap" data-rough="customKm">
+            <input type="number" class="hero-inline-select" value="${state.customKm}"
+              style="width: 70px; text-align: center; -moz-appearance: textfield;"
+              min="10" max="2000" step="10"
+              onchange="setCustomKm(this.value)" oninput="setCustomKm(this.value)">
+            <svg class="rough-box-svg"></svg>
+          </span>
+          km` : ''} a week
+        </p>
+
+        <p class="hero-text" style="margin-top: 16px;">
+          <span class="rough-inline-wrap" data-rough="solar">
+            <select class="hero-inline-select" onchange="setSolar(this.value)">
+              <option value="true"${state.hasSolar ? ' selected' : ''}>I've got solar at home</option>
+              <option value="false"${!state.hasSolar ? ' selected' : ''}>No solar at my place</option>
+            </select>
+            <svg class="rough-box-svg"></svg>
+          </span>
+        </p>
+
+        <div class="ev-equiv">
+          <p class="ev-equiv-label">
+            A comparable EV uses about <strong>${evEff()} kWh / 100km</strong>
+          </p>
+          <p class="hero-eff" style="font-size: 12px; color: #888;">e.g. ${vt.evExamples}</p>
+        </div>
+
+        <div class="savings-box">
+          <div class="savings-title">Yearly fuel cost</div>
+          <div class="savings-row">
+            <span class="label">${fuelLabel} (${state.year} ${vt.label.toLowerCase()})</span>
+            <span class="amount">${fmt$(fuelCostYear)}</span>
+          </div>
+          <div class="savings-row">
+            <span class="label">EV equivalent</span>
+            <span class="amount">${fmt$(evCostYear)}</span>
+          </div>
+          <div class="savings-row total" style="position: relative;">
+            <span class="label">You save</span>
+            <span class="amount">${fmt$(savingsYear)} / year</span>
+            <svg id="roughHighlight" class="rough-highlight-svg"></svg>
+          </div>
+          <div class="savings-breakdown">
+            Based on ${kmYear.toLocaleString()} km/year, ${fuelLabel.toLowerCase()} at ${fuelPrice}¢/L.
+            EV mix: ${Math.round(fastPct*100)}% fast charger, ${Math.round(gridPct*100)}% grid, ${Math.round(solarPct*100)}% solar.
+          </div>
+          <svg id="roughSavingsBox" class="rough-box-svg"></svg>
+        </div>
+
+      `;
+
+      // Draw rough.js box around the select
+      requestAnimationFrame(drawRoughBox);
+    }
+
+    function drawRoughBox() {
+      if (typeof rough === 'undefined') return;
+
+      // Draw rough boxes around all wraps that contain an SVG
+      document.querySelectorAll('.hero-vehicle-wrap, .rough-inline-wrap').forEach(wrap => {
+        const svg = wrap.querySelector('.rough-box-svg');
+        if (!svg) return;
+        const w = wrap.offsetWidth;
+        const h = wrap.offsetHeight;
+        svg.setAttribute('width', w);
+        svg.setAttribute('height', h);
+        svg.innerHTML = '';
+        const rc = rough.svg(svg);
+        svg.appendChild(rc.rectangle(2, 2, w - 4, h - 4, {
+          stroke: '#4a00c3', strokeWidth: 1.5, roughness: 1.5, bowing: 1.5,
+        }));
+      });
+
+      // Savings outer box
+      const savingsWrap = document.querySelector('.savings-box');
+      const savingsSvg = document.getElementById('roughSavingsBox');
+      if (savingsWrap && savingsSvg) {
+        const w = savingsWrap.offsetWidth;
+        const h = savingsWrap.offsetHeight;
+        savingsSvg.setAttribute('width', w);
+        savingsSvg.setAttribute('height', h);
+        savingsSvg.innerHTML = '';
+        const rc = rough.svg(savingsSvg);
+        savingsSvg.appendChild(rc.rectangle(2, 2, w - 4, h - 4, {
+          stroke: '#4a00c3', strokeWidth: 2, roughness: 1.8, bowing: 2,
+        }));
+      }
+
+      // Yellow highlighter on "You save" row
+      const highlightRow = document.querySelector('.savings-row.total');
+      const highlightSvg = document.getElementById('roughHighlight');
+      if (highlightRow && highlightSvg) {
+        const w = highlightRow.offsetWidth;
+        const h = highlightRow.offsetHeight;
+        highlightSvg.setAttribute('width', w);
+        highlightSvg.setAttribute('height', h);
+        highlightSvg.innerHTML = '';
+        const rc = rough.svg(highlightSvg);
+        highlightSvg.appendChild(rc.rectangle(0, h * 0.25, w, h * 0.6, {
+          fill: '#f0cf61',
+          fillStyle: 'solid',
+          stroke: 'none',
+          roughness: 2.5,
+          bowing: 2,
+        }));
+      }
+    }
+
+    // ─── Event handlers ───────────────────────────────────────────────────────
+    function setType(idx) {
+      state.typeIdx = parseInt(idx);
+      // Auto-set fuel type based on defaults
+      const ft = defaultFuelType(state.typeIdx, state.year);
+      if (ft === 'diesel') state.fuelIdx = 2;
+      else if (ft === 'petrol') state.fuelIdx = 0;
+      else state.fuelIdx = defaultFuelPreselect(state.typeIdx) === 'diesel' ? 2 : 0;
+      renderSign();
+      renderConfig();
+    }
+
+    function setYear(y) {
+      state.year = parseInt(y);
+      renderSign();
+      renderConfig();
+    }
+
+    function setFuel(idx) {
+      state.fuelIdx = parseInt(idx);
+      renderSign();
+      renderConfig();
+    }
+
+    function setKm(idx) {
+      state.kmIdx = parseInt(idx);
+      renderConfig();
+    }
+
+    function setCustomKm(val) {
+      const n = parseInt(val);
+      if (n > 0) {
+        state.customKm = n;
+        renderConfig();
+      }
+    }
+
+    function setSolar(val) {
+      state.hasSolar = val === 'true';
+      renderConfig();
+    }
+
+    function togglePrices() {
+      const toggle = document.querySelector('.prices-toggle');
+      const body = document.getElementById('pricesBody');
+      toggle.classList.toggle('open');
+      body.classList.toggle('open');
+    }
+
+    function updateRawPrice(i, val) {
+      const v = parseFloat(val);
+      if (!isNaN(v) && v >= 0) { fuelRows[i].rawPrice = v; renderSign(); renderConfig(); }
+    }
+
+    // ─── Render prices panel (under the sign) ───────────────────────────────
+    function renderPrices() {
+      document.getElementById('pricesPanel').innerHTML = `
+        <h3 class="prices-toggle" onclick="togglePrices()">
+          Energy Price Assumptions <span class="arrow">&#9654;</span>
+        </h3>
+        <div id="pricesBody" class="prices-body">
+          ${fuelRows.map((row, i) => `
+            <div class="price-entry">
+              <span class="entry-label">
+                ${row.name}
+                <span class="raw-unit">${row.rawUnit}</span>
+              </span>
+              <input class="price-input" type="number" step="0.1" min="0"
+                     value="${row.rawPrice}"
+                     oninput="updateRawPrice(${i}, this.value)">
+            </div>
+          `).join('')}
+          <p class="config-note" style="margin-top: 10px;">
+            Current NSW prices from <a href="https://www.fuelcheck.nsw.gov.au/" target="_blank" rel="noopener" style="color: #4a00c3;">FuelCheck NSW</a>
+          </p>
+        </div>
+      `;
+    }
+
+    // ─── Boot ─────────────────────────────────────────────────────────────────
+    renderConfig();
+    renderPrices();
+    // Kick off the spin-up animation for petrol prices
+    requestAnimationFrame(tickSpin);
+  </script>
+
+</body>
+</html>
