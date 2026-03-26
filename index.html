@@ -65,8 +65,8 @@
 
     /* ── Logo panel ─────────────────────────────────────────────── */
     .logo-panel {
-      background: linear-gradient(150deg, #f0cf61 0%, #f0cf61 55%, #f0cf61 100%);
-      padding: 22px 20px 20px;
+      background: #f0cf61;
+      padding: 20px 16px 16px;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -82,9 +82,9 @@
       pointer-events: none;
     }
 
-    .logo-svg {
-      width: 110px; height: 110px;
-      filter: drop-shadow(0 3px 8px rgba(0,0,0,0.22));
+    .logo-img {
+      width: 85%;
+      max-width: 320px;
       position: relative;
       z-index: 1;
     }
@@ -179,6 +179,52 @@
     .led-dot {
       letter-spacing: -6px;
       margin-left: -4px;
+    }
+
+    /* EV colour variants */
+    .led-digits.led-blue {
+      color: #2299ff;
+      text-shadow:
+        0 0  4px #44aaff,
+        0 0 10px #2299ff,
+        0 0 20px rgba(34, 153, 255, 0.70),
+        0 0 40px rgba(34, 120, 255, 0.35),
+        0 0 70px rgba(20, 80, 200, 0.15);
+    }
+    .led-digits.led-teal {
+      color: #00ccaa;
+      text-shadow:
+        0 0  4px #33ddbb,
+        0 0 10px #00ccaa,
+        0 0 20px rgba(0, 204, 170, 0.70),
+        0 0 40px rgba(0, 180, 150, 0.35),
+        0 0 70px rgba(0, 140, 120, 0.15);
+    }
+    .led-digits.led-green {
+      color: #44ee22;
+      text-shadow:
+        0 0  4px #66ff44,
+        0 0 10px #44ee22,
+        0 0 20px rgba(68, 238, 34, 0.70),
+        0 0 40px rgba(40, 200, 20, 0.35),
+        0 0 70px rgba(20, 160, 10, 0.15);
+    }
+
+    /* Flicker-on animation for EV rows */
+    @keyframes led-flicker-on {
+      0%   { opacity: 0; }
+      15%  { opacity: 0.7; }
+      25%  { opacity: 0.1; }
+      40%  { opacity: 0.9; }
+      50%  { opacity: 0.3; }
+      65%  { opacity: 1; }
+      75%  { opacity: 0.6; }
+      85%  { opacity: 1; }
+      100% { opacity: 1; }
+    }
+
+    .led-digits.flicker-on {
+      animation: led-flicker-on 0.6s ease-out forwards;
     }
 
     @keyframes led-breathe {
@@ -583,29 +629,7 @@
         <div class="sign-face">
 
           <div class="logo-panel">
-            <svg class="logo-svg" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
-              <defs>
-                <radialGradient id="g1" cx="38%" cy="28%" r="72%">
-                  <stop offset="0%"   stop-color="#FFE600"/>
-                  <stop offset="48%"  stop-color="#FF8800"/>
-                  <stop offset="100%" stop-color="#CC1800"/>
-                </radialGradient>
-                <radialGradient id="g2" cx="35%" cy="25%" r="60%">
-                  <stop offset="0%"   stop-color="rgba(255,255,255,0.45)"/>
-                  <stop offset="100%" stop-color="rgba(255,255,255,0)"/>
-                </radialGradient>
-                <filter id="fs">
-                  <feDropShadow dx="0" dy="3" stdDeviation="4" flood-color="#000" flood-opacity="0.28"/>
-                </filter>
-              </defs>
-              <circle cx="60" cy="60" r="56" fill="#cc1111" opacity="0.12"/>
-              <path d="M60 6 C60 6, 102 50, 102 72 C102 95 83 114 60 114 C37 114 18 95 18 72 C18 50 60 6 60 6Z"
-                    fill="url(#g1)" filter="url(#fs)"/>
-              <path d="M60 6 C60 6, 102 50, 102 72 C102 95 83 114 60 114 C37 114 18 95 18 72 C18 50 60 6 60 6Z"
-                    fill="url(#g2)"/>
-              <path d="M67 24 L50 66 L64 66 L53 96 L76 54 L62 54 Z"
-                    fill="white" opacity="0.93"/>
-            </svg>
+            <img class="logo-img" src="RA_ElectrifyEverything_Logo_Black.png" alt="Electrify Everything">
           </div>
 
           <div id="price-rows"></div>
@@ -684,10 +708,10 @@
       { fuelType: 'petrol', name: 'Diesel',            rawUnit: '¢ / L',   rawPrice: 295.1, visible: true },
       { fuelType: 'petrol', name: 'Premium 98 Unleaded',  rawUnit: '¢ / L',   rawPrice: 270.1, visible: true },
       { fuelType: 'petrol', name: 'E10 Unleaded',      rawUnit: '¢ / L',   rawPrice: 242.4, visible: true },
-      { fuelType: 'ev',     name: 'Fast Charger',     rawUnit: '¢ / kWh', rawPrice: 65.0,  visible: true },
-      { fuelType: 'ev',     name: 'Charge from Grid', rawUnit: '¢ / kWh', rawPrice: 30.0,  visible: true },
-      { fuelType: 'ev',     name: 'Solar Power',      rawUnit: '¢ / kWh', rawPrice: 5.0,   visible: true },
-      { fuelType: 'ev',     name: 'Solar Sharer (3hrs free)', rawUnit: '¢ / kWh', rawPrice: 0.0, visible: true },
+      { fuelType: 'ev',     name: 'Fast Charger',     rawUnit: '¢ / kWh', rawPrice: 65.0,  visible: true, ledColor: 'led-blue' },
+      { fuelType: 'ev',     name: 'Charge from Grid', rawUnit: '¢ / kWh', rawPrice: 30.0,  visible: true, ledColor: 'led-teal' },
+      { fuelType: 'ev',     name: 'Solar Power',      rawUnit: '¢ / kWh', rawPrice: 5.0,   visible: true, ledColor: 'led-green' },
+      { fuelType: 'ev',     name: 'Solar Sharer (3hrs free)', rawUnit: '¢ / kWh', rawPrice: 0.0, visible: true, ledColor: 'led-green' },
     ];
 
     // ─── App state ────────────────────────────────────────────────────────────
@@ -737,18 +761,26 @@
     }
 
     // ─── Price spin-up animation ────────────────────────────────────────────
-    // Petrol rows spin from ~190 up to their real price over ~10s with an
+    // Petrol rows spin from ~190 up to their real price over 10s with an
     // ease-out feel (fast at first, gradually slowing down like a wheel).
-    const SPIN_DURATION = 10000;          // ms
-    const SPIN_START    = 190.0;          // starting price for petrol rows
-    let spinStart       = null;           // timestamp
-    let spinDone        = false;
-    const animOverrides = new Map();      // row name → current animated value
+    // EV rows flicker on one-by-one starting at 4s.
+    const SPIN_DURATION   = 10000;        // ms – petrol climb
+    const EV_REVEAL_AT    = 4000;         // ms – when first EV row flickers on
+    const EV_STAGGER      = 400;          // ms between each EV row reveal
+    const SPIN_START      = 190.0;        // starting price for petrol rows
+    let spinStart         = null;         // timestamp
+    let spinDone          = false;
+    const animOverrides   = new Map();    // row name → current animated value
 
     // Exponential ease-out: fast start, long tail
     function easeOutExpo(t) {
       return t >= 1 ? 1 : 1 - Math.pow(2, -8 * t);
     }
+
+    let evRevealed = new Set();           // EV row names that have flickered on
+    let evRevealPhase = false;            // true while staggering EV reveals
+    let introRunning = true;              // true until entire intro sequence done
+    let evRevealStarted = false;          // have we kicked off EV reveals yet
 
     function tickSpin(ts) {
       if (spinStart === null) spinStart = ts;
@@ -759,16 +791,19 @@
       fuelRows.forEach(row => {
         if (row.fuelType !== 'petrol') return;
         const target = row.rawPrice;
-        // Add a small per-row random jitter to the digits while spinning
         const base = SPIN_START + (target - SPIN_START) * eased;
         if (t < 1) {
-          // jitter that shrinks as we approach the target
-          const jitter = (1 - eased) * (Math.random() - 0.5) * 4;
-          animOverrides.set(row.name, Math.max(0, base + jitter));
+          animOverrides.set(row.name, base);
         } else {
           animOverrides.set(row.name, target);
         }
       });
+
+      // Kick off EV reveals at 4s, independently of petrol finishing
+      if (elapsed >= EV_REVEAL_AT && !evRevealStarted) {
+        evRevealStarted = true;
+        flickerOnEvRows();
+      }
 
       renderSign();
 
@@ -781,20 +816,40 @@
       }
     }
 
+    function flickerOnEvRows() {
+      evRevealPhase = true;
+      const evRows = fuelRows.filter(r => r.fuelType === 'ev' && r.visible);
+      evRows.forEach((row, i) => {
+        setTimeout(() => {
+          evRevealed.add(row.name);
+          revealEvRow(row.name);
+          // After last one, end intro
+          if (i === evRows.length - 1) {
+            setTimeout(() => {
+              evRevealPhase = false;
+              introRunning = false;
+            }, 700);
+          }
+        }, i * EV_STAGGER);
+      });
+    }
+
     // ─── Render sign ─────────────────────────────────────────────────────────
-    function renderSign() {
+    // Track DOM elements per row so we can update digits in-place during
+    // animation without destroying EV flicker animations.
+    const rowElements = new Map();        // row.name → { el, digits }
+
+    function buildSign() {
       const container = document.getElementById('price-rows');
       container.innerHTML = '';
+      rowElements.clear();
 
       fuelRows.forEach(row => {
         if (!row.visible) return;
-        // Use animated override while spinning, otherwise real value
-        let val;
-        if (animOverrides.has(row.name)) {
-          val = animOverrides.get(row.name);
-        } else {
-          val = displayValue(row);
-        }
+        const colorClass = row.ledColor || '';
+        const val = displayValue(row);
+        const isEv = row.fuelType === 'ev';
+
         const el = document.createElement('div');
         el.className = 'price-row';
         el.innerHTML = `
@@ -804,12 +859,64 @@
               <div class="label-unit">${displayUnit(row)}</div>
             </div>
             <div class="led-display">
-              <span class="led-digits">${val.toFixed(1).replace('.', '<span class="led-dot">.</span>')}</span>
+              <span class="led-digits ${colorClass}" ${isEv ? 'style="visibility:hidden"' : ''}>${formatLed(val)}</span>
             </div>
           </div>
         `;
         container.appendChild(el);
+        rowElements.set(row.name, {
+          el,
+          digits: el.querySelector('.led-digits'),
+        });
       });
+    }
+
+    function formatLed(val) {
+      return val.toFixed(1).replace('.', '<span class="led-dot">.</span>');
+    }
+
+    function renderSign() {
+      // If not yet built, do a full build
+      if (rowElements.size === 0) { buildSign(); }
+
+      fuelRows.forEach(row => {
+        if (!row.visible) return;
+        const entry = rowElements.get(row.name);
+        if (!entry) return;
+
+        const isEv = row.fuelType === 'ev';
+        const val = animOverrides.has(row.name) ? animOverrides.get(row.name) : displayValue(row);
+
+        if (isEv) {
+          // EV rows: only touch visibility/flicker, don't update digits during flicker
+          if (introRunning && !evRevealed.has(row.name)) {
+            entry.digits.style.visibility = 'hidden';
+          }
+          // digits value updated below (safe, won't disrupt CSS animation)
+        }
+
+        // Update the displayed number
+        entry.digits.innerHTML = formatLed(val);
+
+        // Update unit label (can change when user changes vehicle)
+        const unitEl = entry.el.querySelector('.label-unit');
+        if (unitEl) unitEl.textContent = displayUnit(row);
+      });
+    }
+
+    // Trigger flicker-on for a single EV row
+    function revealEvRow(rowName) {
+      const entry = rowElements.get(rowName);
+      if (!entry) return;
+      entry.digits.style.visibility = '';
+      entry.digits.classList.add('flicker-on');
+    }
+
+    // Full rebuild (used when config changes)
+    function rebuildSign() {
+      rowElements.clear();
+      buildSign();
+      renderSign();
     }
 
     // ─── Render config ────────────────────────────────────────────────────────
@@ -1008,19 +1115,19 @@
       if (ft === 'diesel') state.fuelIdx = 2;
       else if (ft === 'petrol') state.fuelIdx = 0;
       else state.fuelIdx = defaultFuelPreselect(state.typeIdx) === 'diesel' ? 2 : 0;
-      renderSign();
+      rebuildSign();
       renderConfig();
     }
 
     function setYear(y) {
       state.year = parseInt(y);
-      renderSign();
+      rebuildSign();
       renderConfig();
     }
 
     function setFuel(idx) {
       state.fuelIdx = parseInt(idx);
-      renderSign();
+      rebuildSign();
       renderConfig();
     }
 
@@ -1051,7 +1158,7 @@
 
     function updateRawPrice(i, val) {
       const v = parseFloat(val);
-      if (!isNaN(v) && v >= 0) { fuelRows[i].rawPrice = v; renderSign(); renderConfig(); }
+      if (!isNaN(v) && v >= 0) { fuelRows[i].rawPrice = v; rebuildSign(); renderConfig(); }
     }
 
     // ─── Render prices panel (under the sign) ───────────────────────────────
@@ -1080,6 +1187,7 @@
     }
 
     // ─── Boot ─────────────────────────────────────────────────────────────────
+    buildSign();
     renderConfig();
     renderPrices();
     // Kick off the spin-up animation for petrol prices
