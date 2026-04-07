@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EV Calculator — Admin</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Roboto', sans-serif;
+      font-weight: 300;
+      background: #f4f3f0;
+      color: #333;
+      padding: 32px;
+      max-width: 960px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      font-size: 28px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .subtitle {
+      font-size: 14px;
+      color: #777;
+      margin-bottom: 32px;
+    }
+
+    h2 {
+      font-size: 18px;
+      font-weight: 500;
+      color: #4a00c3;
+      margin-bottom: 12px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid rgba(74,0,195,0.15);
+    }
+
+    .section {
+      background: #fff;
+      border-radius: 10px;
+      padding: 24px;
+      margin-bottom: 24px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+    }
+
+    .section p.desc {
+      font-size: 13px;
+      color: #888;
+      margin-bottom: 16px;
+      line-height: 1.5;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+
+    th {
+      text-align: left;
+      font-weight: 500;
+      font-size: 11px;
+      color: #888;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding: 6px 8px;
+      border-bottom: 2px solid #eee;
+    }
+
+    td {
+      padding: 8px;
+      border-bottom: 1px solid #f0f0f0;
+      vertical-align: top;
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="number"],
+    textarea {
+      font-family: 'Roboto', sans-serif;
+      font-size: 14px;
+      font-weight: 300;
+      padding: 6px 10px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      width: 100%;
+      color: #333;
+    }
+
+    input:focus, textarea:focus {
+      outline: none;
+      border-color: #4a00c3;
+      box-shadow: 0 0 0 2px rgba(74,0,195,0.1);
+    }
+
+    textarea {
+      min-height: 60px;
+      resize: vertical;
+    }
+
+    .btn {
+      font-family: 'Roboto', sans-serif;
+      font-size: 13px;
+      font-weight: 500;
+      padding: 8px 18px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+
+    .btn-primary {
+      background: #4a00c3;
+      color: #fff;
+    }
+
+    .btn-primary:hover { background: #3800a0; }
+
+    .btn-secondary {
+      background: transparent;
+      color: #4a00c3;
+      border: 1px solid #4a00c3;
+    }
+
+    .btn-secondary:hover { background: rgba(74,0,195,0.05); }
+
+    .btn-danger {
+      background: transparent;
+      color: #c33;
+      border: 1px solid #c33;
+      font-size: 12px;
+      padding: 4px 10px;
+    }
+
+    .btn-danger:hover { background: rgba(200,0,0,0.05); }
+
+    .btn-add {
+      background: transparent;
+      color: #4a00c3;
+      border: 1px dashed #4a00c3;
+      padding: 6px 14px;
+      font-size: 12px;
+      margin-top: 8px;
+    }
+
+    .btn-add:hover { background: rgba(74,0,195,0.05); }
+
+    .actions-bar {
+      display: flex;
+      gap: 12px;
+      margin-top: 24px;
+      align-items: center;
+    }
+
+    .status-msg {
+      font-size: 13px;
+      color: #4a00c3;
+      margin-left: 12px;
+    }
+
+    .checkbox-cell {
+      text-align: center;
+    }
+
+    .checkbox-cell input {
+      width: 16px;
+      height: 16px;
+      accent-color: #4a00c3;
+    }
+
+    .tag {
+      display: inline-block;
+      background: rgba(74,0,195,0.08);
+      color: #4a00c3;
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: 12px;
+      margin: 2px 2px;
+    }
+
+    .postcodes-cell {
+      font-size: 12px;
+      color: #666;
+      max-width: 300px;
+    }
+
+    .search-bar {
+      margin-bottom: 12px;
+    }
+
+    .search-bar input {
+      max-width: 300px;
+    }
+
+    .compact-input {
+      width: 100px !important;
+    }
+
+    .export-area {
+      background: #f8f6ff;
+      border: 1px solid rgba(74,0,195,0.12);
+      border-radius: 6px;
+      padding: 12px;
+      font-size: 12px;
+      font-family: monospace;
+      max-height: 200px;
+      overflow: auto;
+      white-space: pre-wrap;
+      word-break: break-all;
+      margin-top: 12px;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>EV Savings Calculator — Admin</h1>
+  <p class="subtitle">Manage prices, MP data, ministers, and policies. Changes are saved to JSON files.</p>
+
+  <!-- ── Fuel Prices ── -->
+  <div class="section" id="pricesSection">
+    <h2>Energy Prices</h2>
+    <p class="desc">Default prices shown on the bowser sign and used in savings calculations.</p>
+    <table>
+      <thead>
+        <tr><th>Fuel Type</th><th>Name</th><th>Unit</th><th style="width:100px">Price</th></tr>
+      </thead>
+      <tbody id="pricesBody"></tbody>
+    </table>
+  </div>
+
+  <!-- ── Ministers ── -->
+  <div class="section" id="ministersSection">
+    <h2>Ministers</h2>
+    <p class="desc">Recipients of the advocacy email (in addition to the user's local MP).</p>
+    <table>
+      <thead>
+        <tr><th>Title / Name</th><th>Role</th><th>Email</th><th style="width:60px"></th></tr>
+      </thead>
+      <tbody id="ministersBody"></tbody>
+    </table>
+    <button class="btn btn-add" onclick="addMinister()">+ Add minister</button>
+  </div>
+
+  <!-- ── Policies ── -->
+  <div class="section" id="policiesSection">
+    <h2>Suggested Policies</h2>
+    <p class="desc">Policy options users can select when composing their email. Checked = on by default.</p>
+    <table>
+      <thead>
+        <tr><th class="checkbox-cell" style="width:40px">On</th><th>Policy wording</th><th style="width:60px"></th></tr>
+      </thead>
+      <tbody id="policiesBody"></tbody>
+    </table>
+    <button class="btn btn-add" onclick="addPolicy()">+ Add policy</button>
+  </div>
+
+  <!-- ── MP / Electorate Data ── -->
+  <div class="section" id="mpSection">
+    <h2>MP & Electorate Data</h2>
+    <p class="desc">Postcode → electorate → MP mapping. Search to find and edit entries. The full dataset is loaded from <code>mp-data.json</code>.</p>
+    <div class="search-bar">
+      <input type="text" id="mpSearch" placeholder="Search by postcode, electorate, or MP name…" oninput="filterMPs(this.value)">
+    </div>
+    <table>
+      <thead>
+        <tr><th>Electorate</th><th>MP Name</th><th>Email</th><th>Postcodes</th></tr>
+      </thead>
+      <tbody id="mpBody"></tbody>
+    </table>
+    <div id="mpCount" style="font-size: 12px; color: #888; margin-top: 8px;"></div>
+  </div>
+
+  <!-- ── Save / Export ── -->
+  <div class="actions-bar">
+    <button class="btn btn-primary" onclick="saveAll()">Save all changes</button>
+    <button class="btn btn-secondary" onclick="exportJSON()">Export JSON</button>
+    <span class="status-msg" id="statusMsg"></span>
+  </div>
+  <pre class="export-area" id="exportArea"></pre>
+
+<script>
+  // ─── Data stores ─────────────────────────────────────────────────────────
+  let prices = [];
+  let ministers = [];
+  let policies = [];
+  let mpData = { pcToElec: {}, elecToMp: {} };
+
+  // ─── Load data ───────────────────────────────────────────────────────────
+  async function loadData() {
+    // Load mp-data.json
+    try {
+      const resp = await fetch('mp-data.json');
+      mpData = await resp.json();
+    } catch(e) {
+      console.warn('Could not load mp-data.json:', e);
+    }
+
+    // Load admin config (prices, ministers, policies) or use defaults
+    try {
+      const resp = await fetch('admin-config.json');
+      if (resp.ok) {
+        const cfg = await resp.json();
+        prices = cfg.prices || getDefaultPrices();
+        ministers = cfg.ministers || getDefaultMinisters();
+        policies = cfg.policies || getDefaultPolicies();
+      } else {
+        throw new Error('not found');
+      }
+    } catch(e) {
+      prices = getDefaultPrices();
+      ministers = getDefaultMinisters();
+      policies = getDefaultPolicies();
+    }
+
+    renderAll();
+  }
+
+  function getDefaultPrices() {
+    return [
+      { type: 'petrol', name: 'Diesel',              unit: '¢ / L',   price: 295.1 },
+      { type: 'petrol', name: 'Premium 98 Unleaded',  unit: '¢ / L',   price: 270.1 },
+      { type: 'petrol', name: 'E10 Unleaded',         unit: '¢ / L',   price: 242.4 },
+      { type: 'ev',     name: 'Fast Charger',         unit: '¢ / kWh', price: 65.0 },
+      { type: 'ev',     name: 'Charge from Grid',     unit: '¢ / kWh', price: 30.0 },
+      { type: 'ev',     name: 'Solar Power',          unit: '¢ / kWh', price: 5.0 },
+      { type: 'ev',     name: 'Solar Sharer (3 hrs free)', unit: '¢ / kWh', price: 0.0 },
+    ];
+  }
+
+  function getDefaultMinisters() {
+    return [
+      { name: 'The Hon Anthony Albanese MP', role: 'Prime Minister', email: 'minister@pm.gov.au' },
+      { name: 'The Hon Jim Chalmers MP', role: 'Treasurer', email: 'tsry@treasury.gov.au' },
+      { name: 'The Hon Chris Bowen MP', role: 'Minister for Climate Change and Energy', email: 'minister.bowen@industry.gov.au' },
+    ];
+  }
+
+  function getDefaultPolicies() {
+    return [
+      { text: 'Keep the fringe benefits tax (FBT) discount for electric vehicles in place', checked: true },
+      { text: 'Make a partial tax deduction for EV purchases available to all income earners — so the tax benefit goes to people who can\'t salary sacrifice too', checked: true },
+      { text: 'Fund a targeted incentive for the 20% of drivers who drive the most — if these drivers switched to electric first, we\'d cut transport emissions by 50%', checked: true },
+      { text: 'Offer 0% loans of up to $20,000 to make new EVs more affordable for everyday Australians', checked: true },
+      { text: 'Offer a full tax deduction for e-bike purchases', checked: false },
+      { text: 'Allow a tax deduction for public transport expenses for work travel', checked: false },
+      { text: 'Require workplaces that provide employee parking to install basic EV charging points by 2030', checked: true },
+    ];
+  }
+
+  // ─── Render ──────────────────────────────────────────────────────────────
+  function renderAll() {
+    renderPrices();
+    renderMinisters();
+    renderPolicies();
+    renderMPs('');
+  }
+
+  function renderPrices() {
+    const body = document.getElementById('pricesBody');
+    body.innerHTML = prices.map((p, i) => `
+      <tr>
+        <td><span class="tag">${p.type}</span></td>
+        <td>${p.name}</td>
+        <td>${p.unit}</td>
+        <td><input type="number" class="compact-input" step="0.1" value="${p.price}" onchange="prices[${i}].price = parseFloat(this.value)"></td>
+      </tr>
+    `).join('');
+  }
+
+  function renderMinisters() {
+    const body = document.getElementById('ministersBody');
+    body.innerHTML = ministers.map((m, i) => `
+      <tr>
+        <td><input type="text" value="${esc(m.name)}" onchange="ministers[${i}].name = this.value"></td>
+        <td><input type="text" value="${esc(m.role)}" onchange="ministers[${i}].role = this.value"></td>
+        <td><input type="email" value="${esc(m.email)}" onchange="ministers[${i}].email = this.value"></td>
+        <td><button class="btn btn-danger" onclick="ministers.splice(${i}, 1); renderMinisters()">✕</button></td>
+      </tr>
+    `).join('');
+  }
+
+  function renderPolicies() {
+    const body = document.getElementById('policiesBody');
+    body.innerHTML = policies.map((p, i) => `
+      <tr>
+        <td class="checkbox-cell"><input type="checkbox" ${p.checked ? 'checked' : ''} onchange="policies[${i}].checked = this.checked"></td>
+        <td><textarea onchange="policies[${i}].text = this.value">${esc(p.text)}</textarea></td>
+        <td><button class="btn btn-danger" onclick="policies.splice(${i}, 1); renderPolicies()">✕</button></td>
+      </tr>
+    `).join('');
+  }
+
+  // Build reverse mapping: electorate -> postcodes
+  function buildElecPostcodes() {
+    const map = {};
+    for (const [pc, elecs] of Object.entries(mpData.pcToElec)) {
+      for (const e of elecs) {
+        if (!map[e]) map[e] = [];
+        map[e].push(pc);
+      }
+    }
+    for (const e in map) map[e].sort();
+    return map;
+  }
+
+  let elecPostcodes = {};
+  let mpFilter = '';
+
+  function renderMPs(filter) {
+    mpFilter = filter.toLowerCase();
+    elecPostcodes = buildElecPostcodes();
+
+    const body = document.getElementById('mpBody');
+    const electorates = Object.keys(mpData.elecToMp).sort();
+
+    const filtered = electorates.filter(e => {
+      if (!mpFilter) return true;
+      const info = mpData.elecToMp[e];
+      const postcodes = (elecPostcodes[e] || []).join(' ');
+      return e.toLowerCase().includes(mpFilter) ||
+             info.mp.toLowerCase().includes(mpFilter) ||
+             postcodes.includes(mpFilter);
+    });
+
+    // Show max 30 at a time to keep DOM manageable
+    const shown = filtered.slice(0, 30);
+
+    body.innerHTML = shown.map(e => {
+      const info = mpData.elecToMp[e];
+      const pcs = elecPostcodes[e] || [];
+      return `
+        <tr>
+          <td><strong>${esc(e)}</strong></td>
+          <td><input type="text" value="${esc(info.mp)}" onchange="mpData.elecToMp['${esc(e)}'].mp = this.value"></td>
+          <td><input type="email" value="${esc(info.email)}" onchange="mpData.elecToMp['${esc(e)}'].email = this.value"></td>
+          <td class="postcodes-cell">${pcs.map(p => `<span class="tag">${p}</span>`).join('')}</td>
+        </tr>
+      `;
+    }).join('');
+
+    document.getElementById('mpCount').textContent =
+      `Showing ${shown.length} of ${filtered.length} electorates` +
+      (filtered.length < electorates.length ? ` (${electorates.length} total)` : '');
+  }
+
+  function filterMPs(val) { renderMPs(val); }
+
+  // ─── Add helpers ─────────────────────────────────────────────────────────
+  function addMinister() {
+    ministers.push({ name: '', role: '', email: '' });
+    renderMinisters();
+  }
+
+  function addPolicy() {
+    policies.push({ text: '', checked: false });
+    renderPolicies();
+  }
+
+  // ─── Save ────────────────────────────────────────────────────────────────
+  async function saveAll() {
+    const status = document.getElementById('statusMsg');
+    status.textContent = 'Saving…';
+
+    // Build admin-config.json
+    const config = { prices, ministers, policies };
+
+    // For a static site, we can't write files from the browser.
+    // Instead, show the JSON for the user to copy/download.
+    const configJson = JSON.stringify(config, null, 2);
+    const mpJson = JSON.stringify(mpData, null, 2);
+
+    // Create downloadable files
+    downloadFile('admin-config.json', configJson);
+    setTimeout(() => downloadFile('mp-data.json', mpJson), 500);
+
+    status.textContent = 'Downloaded admin-config.json and mp-data.json — place them in the site root.';
+  }
+
+  function downloadFile(name, content) {
+    const blob = new Blob([content], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = name;
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  function exportJSON() {
+    const area = document.getElementById('exportArea');
+    const config = { prices, ministers, policies };
+    area.textContent = JSON.stringify(config, null, 2);
+    area.style.display = area.style.display === 'none' ? 'block' : 'none';
+  }
+
+  // ─── Util ────────────────────────────────────────────────────────────────
+  function esc(s) {
+    return String(s).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  }
+
+  // ─── Boot ────────────────────────────────────────────────────────────────
+  loadData();
+</script>
+
+</body>
+</html>

@@ -25,6 +25,7 @@
       gap: 60px;
       padding: 40px;
       flex-wrap: wrap;
+      overflow-x: hidden;
     }
 
     /* ── 3-D scene ──────────────────────────────────────────────── */
@@ -277,20 +278,21 @@
       font-weight: 300;
       color: #555;
       font-size: 12px;
-      margin-top: 16px;
-      width: 100%;
-      max-width: 320px;
+      background: #f0cf61;
+      padding: 10px 16px;
+      border-top: 2px solid #b8b7b5;
     }
 
     .prices-panel h3 {
       font-size: 10px;
-      font-weight: 500;
-      color: #4a00c3;
-      letter-spacing: 0.14em;
+      font-weight: 600;
+      color: #333;
+      letter-spacing: 0.12em;
       text-transform: uppercase;
-      margin-bottom: 10px;
+      margin: 0;
       cursor: pointer;
       user-select: none;
+      text-align: center;
     }
 
     .prices-panel h3 .arrow {
@@ -306,7 +308,7 @@
 
     .prices-panel .prices-body {
       display: none;
-      margin-top: 8px;
+      margin-top: 10px;
     }
 
     .prices-panel .prices-body.open {
@@ -618,6 +620,190 @@
       display: block;
     }
 
+    /* ── Action panel (full width below both columns) ──────── */
+    .action-panel {
+      flex-basis: 100%;
+      max-width: 800px;
+      min-width: 0;
+      overflow: hidden;
+      margin: 0 auto;
+      font-family: 'Roboto', sans-serif;
+      font-weight: 300;
+      color: #333;
+      font-size: 13px;
+    }
+
+    /* ── Take Action section ─────────────────────────────────── */
+    .action-section {
+      padding-top: 20px;
+      border-top: 1px solid rgba(0,0,0,0.08);
+    }
+
+    .action-heading {
+      font-family: 'Roboto', sans-serif;
+      font-size: 22px;
+      font-weight: 700;
+      color: #222;
+      line-height: 1.2;
+      margin-bottom: 8px;
+    }
+
+    .action-subtext {
+      font-family: 'Roboto', sans-serif;
+      font-size: 14px;
+      font-weight: 300;
+      color: #555;
+      line-height: 1.5;
+      margin-bottom: 16px;
+    }
+
+    .action-field {
+      margin-bottom: 14px;
+    }
+
+    .action-field label {
+      display: block;
+      font-size: 12px;
+      font-weight: 500;
+      color: #444;
+      margin-bottom: 4px;
+      letter-spacing: 0.02em;
+    }
+
+    .action-field input[type="text"],
+    .action-field input[type="email"],
+    .action-field input[type="number"] {
+      font-family: 'Roboto', sans-serif;
+      font-size: 15px;
+      font-weight: 300;
+      width: 100%;
+      padding: 8px 10px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      box-sizing: border-box;
+      color: #333;
+    }
+
+    .action-field input:focus {
+      outline: none;
+      border-color: #4a00c3;
+      box-shadow: 0 0 0 2px rgba(74,0,195,0.12);
+    }
+
+    .mp-result {
+      font-size: 14px;
+      color: #4a00c3;
+      font-weight: 400;
+      margin-top: 6px;
+      min-height: 20px;
+    }
+
+    .mp-result a {
+      color: #4a00c3;
+      text-decoration: underline;
+    }
+
+    .recipients-list {
+      font-size: 13px;
+      color: #555;
+      margin-bottom: 16px;
+      line-height: 1.6;
+    }
+
+    .recipients-list .recipient {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .recipients-list .recipient-check {
+      color: #4a00c3;
+      font-weight: 500;
+    }
+
+    .policy-list {
+      list-style: none;
+      padding: 0;
+      margin: 0 0 16px 0;
+    }
+
+    .policy-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      margin-bottom: 10px;
+      font-size: 14px;
+      font-weight: 300;
+      color: #333;
+      line-height: 1.4;
+    }
+
+    .policy-list input[type="checkbox"] {
+      margin-top: 3px;
+      accent-color: #4a00c3;
+      flex-shrink: 0;
+      width: 16px;
+      height: 16px;
+    }
+
+    .email-preview {
+      background: #f8f6ff;
+      border: 1px solid rgba(74,0,195,0.12);
+      border-radius: 8px;
+      padding: 14px;
+      font-size: 13px;
+      font-weight: 300;
+      color: #333;
+      line-height: 1.6;
+      white-space: pre-wrap;
+      overflow-wrap: break-word;
+      word-break: break-word;
+      max-height: 260px;
+      overflow-y: auto;
+      margin-bottom: 14px;
+    }
+
+    .action-btn {
+      display: inline-block;
+      font-family: 'Roboto', sans-serif;
+      font-size: 16px;
+      font-weight: 500;
+      color: #fff;
+      background: #4a00c3;
+      border: none;
+      border-radius: 8px;
+      padding: 12px 28px;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background 0.2s;
+    }
+
+    .action-btn:hover {
+      background: #3500a0;
+    }
+
+    .action-btn.secondary {
+      background: transparent;
+      color: #4a00c3;
+      border: 1.5px solid #4a00c3;
+      margin-left: 8px;
+    }
+
+    .action-btn.secondary:hover {
+      background: rgba(74,0,195,0.06);
+    }
+
+    /* ── Responsive ─────────────────────────────────────────── */
+    @media (max-width: 768px) {
+      body {
+        padding: 20px 16px;
+        gap: 30px;
+      }
+      .sign-face { width: min(290px, 80vw); }
+      .config-panel { width: 100%; max-width: 400px; }
+      .action-panel { max-width: 100%; }
+    }
+
   </style>
 </head>
 <body>
@@ -639,30 +825,49 @@
             <div class="brand-sub">How much higher will petrol go?</div>
           </div>
 
+          <div id="pricesPanel" class="prices-panel"></div>
+
         </div>
         <div class="sign-depth"></div>
       </div>
     </div>
-    <div id="pricesPanel" class="prices-panel"></div>
   </div>
 
   <!-- ── Config panel ──────────────────────────────────────── -->
   <div class="config-panel" id="configPanel"></div>
 
+  <!-- ── Action section (spans full width below both columns) ── -->
+  <div class="action-panel" id="actionPanel"></div>
+
   <script>
-    // ─── Vehicle type data ───────────────────────────────────────────────────
+// MP data loaded dynamically via fetch
+    window.pcToElec = {};
+    window.elecToMp = {};
+
+        // ─── Vehicle type data ───────────────────────────────────────────────────
     // Columns: small, med/large, sm/med SUV, large SUV, ute, van
     const vtypes = [
-      { id: 'small',    label: 'Small car',         examples: 'Corolla, i30, Mazda3, Swift',       evKwh: 14, evExamples: 'BYD Dolphin, MG4',                    defaultKmYear: 11000 },
-      { id: 'medlarge', label: 'Medium / large car', examples: 'Camry, Commodore, Falcon, Accord',  evKwh: 16, evExamples: 'Tesla Model 3, BYD Seal',             defaultKmYear: 12000 },
-      { id: 'smsuv',    label: 'Small / medium SUV', examples: 'RAV4, CX-5, Tucson, X-Trail',       evKwh: 17, evExamples: 'Tesla Model Y, BYD Atto 3, Ioniq 5',  defaultKmYear: 12500 },
-      { id: 'lgsuv',    label: 'Large SUV / 4WD',    examples: 'LandCruiser, Prado, Kluger, Patrol', evKwh: 22, evExamples: 'BMW iX, Kia EV9',                     defaultKmYear: 14000 },
-      { id: 'ute',      label: 'Ute / pickup',       examples: 'HiLux, Ranger, Triton, D-Max',      evKwh: 25, evExamples: 'EV ute (est.)',                        defaultKmYear: 15000 },
-      { id: 'van',      label: 'Van / people mover', examples: 'HiAce, Carnival, Transit, Staria',  evKwh: 25, evExamples: 'LDV eDeliver 9, Mercedes eVito',       defaultKmYear: 15000 },
+      // tankL: typical petrol tank litres, battKwh: typical EV battery kWh
+      { id: 'small',    label: 'Small car',         examples: 'Corolla, i30, Mazda3, Swift',       evKwh: 14, evExamples: 'BYD Dolphin, MG4',                    defaultKmYear: 11000, tankL: 50,  battKwh: 50 },
+      { id: 'medlarge', label: 'Medium / large car', examples: 'Camry, Commodore, Falcon, Accord',  evKwh: 16, evExamples: 'Tesla Model 3, BYD Seal',             defaultKmYear: 12000, tankL: 60,  battKwh: 60 },
+      { id: 'smsuv',    label: 'Small / medium SUV', examples: 'RAV4, CX-5, Tucson, X-Trail',       evKwh: 17, evExamples: 'Tesla Model Y, BYD Atto 3, Ioniq 5',  defaultKmYear: 12500, tankL: 58,  battKwh: 62 },
+      { id: 'lgsuv',    label: 'Large SUV / 4WD',    examples: 'LandCruiser, Prado, Kluger, Patrol', evKwh: 22, evExamples: 'BMW iX, Kia EV9',                     defaultKmYear: 14000, tankL: 80,  battKwh: 90 },
+      { id: 'ute',      label: 'Ute / pickup',       examples: 'HiLux, Ranger, Triton, D-Max',      evKwh: 25, evExamples: 'EV ute (est.)',                        defaultKmYear: 15000, tankL: 80,  battKwh: 85 },
+      { id: 'van',      label: 'Van / people mover', examples: 'HiAce, Carnival, Transit, Staria',  evKwh: 25, evExamples: 'LDV eDeliver 9, Mercedes eVito',       defaultKmYear: 15000, tankL: 75,  battKwh: 80 },
     ];
 
-    // Petrol L/100km lookup: petrolTable[year][typeIdx]
-    const petrolTable = {
+    // Year ranges for the vehicle age selector
+    const yearRanges = [
+      { label: '2020–now',  value: '2020-2024', years: [2020,2021,2022,2023,2024] },
+      { label: '2015–2019', value: '2015-2019', years: [2015,2016,2017,2018,2019] },
+      { label: '2010–2014', value: '2010-2014', years: [2010,2011,2012,2013,2014] },
+      { label: '2005–2009', value: '2005-2009', years: [2005,2006,2007,2008,2009] },
+      { label: '2000–2004', value: '2000-2004', years: [2000,2001,2002,2003,2004] },
+      { label: 'Pre-2000',  value: '1996-1999', years: [1996,1997,1998,1999] },
+    ];
+
+    // Raw per-year petrol L/100km data [small, med/large, smSUV, lgSUV, ute, van]
+    const petrolByYear = {
       1996:[11.2,14.6,12.6,17.4,16.8,16.2],1997:[11.2,14.5,12.1,16.7,16.8,16.1],1998:[11.3,14.6,11.8,16.2,16.8,15.9],
       1999:[11.3,14.4,11.7,16.2,16.8,15.8],2000:[11.2,13.9,11.8,16.2,16.8,15.6],2001:[11.3,14.3,11.5,15.9,16.7,15.5],
       2002:[11.2,14.0,11.6,15.9,16.6,15.3],2003:[10.9,14.1,11.6,16.0,16.5,15.2],2004:[10.8,14.0,11.5,15.9,16.3,15.0],
@@ -674,9 +879,8 @@
       2020:[7.7,9.9,8.1,11.2,11.5,10.6],2021:[7.5,9.7,8.0,11.0,11.3,10.4],2022:[7.4,9.6,7.9,10.8,11.2,10.3],
       2023:[7.1,9.1,7.5,10.3,10.6,9.8],2024:[6.8,8.8,7.2,9.9,10.2,9.4],
     };
-
-    // Diesel L/100km lookup: dieselTable[year][typeIdx]
-    const dieselTable = {
+    // Raw per-year diesel L/100km data
+    const dieselByYear = {
       1996:[9.6,12.5,10.8,14.9,14.4,13.7],1997:[9.6,12.4,10.3,14.3,14.4,13.7],1998:[9.6,12.5,10.1,13.9,14.4,13.5],
       1999:[9.6,12.4,10.0,13.9,14.4,13.4],2000:[9.6,11.9,10.1,13.9,14.4,13.2],2001:[9.6,12.3,9.8,13.6,14.3,13.2],
       2002:[9.6,12.0,9.9,13.6,14.2,13.0],2003:[9.3,12.1,9.9,13.7,14.1,12.9],2004:[9.2,11.9,9.8,13.5,13.9,12.8],
@@ -689,12 +893,27 @@
       2023:[6.0,7.8,6.4,8.8,9.1,8.4],2024:[5.8,7.5,6.1,8.5,8.7,8.0],
     };
 
+    // Pre-compute averaged tables keyed by range value
+    function avgTable(raw) {
+      const out = {};
+      for (const r of yearRanges) {
+        const avg = [0,0,0,0,0,0];
+        for (const y of r.years) for (let i = 0; i < 6; i++) avg[i] += raw[y][i];
+        for (let i = 0; i < 6; i++) avg[i] = +(avg[i] / r.years.length).toFixed(1);
+        out[r.value] = avg;
+      }
+      return out;
+    }
+    const petrolTable = avgTable(petrolByYear);
+    const dieselTable = avgTable(dieselByYear);
+
     // Fuel type defaults per spec: returns 'petrol', 'diesel', or 'ask' (with a preselect)
-    function defaultFuelType(typeIdx, year) {
+    function defaultFuelType(typeIdx, yearRange) {
+      const midYear = parseInt(yearRange);  // e.g. '2015-2019' → 2015
       if (typeIdx <= 1) return 'petrol';                    // small, med/large: always petrol
-      if (typeIdx === 2) return year >= 2012 ? 'ask' : 'petrol'; // sm/med SUV: ask from 2012
+      if (typeIdx === 2) return midYear >= 2010 ? 'ask' : 'petrol'; // sm/med SUV: ask from 2010+
       if (typeIdx === 3) return 'ask';                       // large SUV: always ask
-      if (typeIdx === 4) return year >= 2006 ? 'diesel' : 'petrol'; // ute: diesel from 2006
+      if (typeIdx === 4) return midYear >= 2005 ? 'diesel' : 'petrol'; // ute: diesel from 2005+
       return 'ask';                                          // van: always ask
     }
 
@@ -731,18 +950,45 @@
 
     const state = {
       typeIdx:  2,       // default: small/med SUV (most popular)
-      year:     2017,
+      year:     '2015-2019',
       fuelIdx:  0,       // index into fuelOptions
       kmIdx:    1,        // 230km/week
       customKm: 300,      // default custom value
-      hasSolar: true,
+      solarMode: 'high',  // 'high' = solar at home, use often | 'low' = have solar, car out | 'none' = no solar
+    };
+
+    // ─── Policies & action state ───────────────────────────────────────────────
+    const policies = [
+      { id: 'fbt',       label: 'Keep the fringe benefits tax (FBT) discount for electric vehicles in place so more families can get an EV from work', checked: true },
+      { id: 'taxdeduct', label: 'Offer salary sacrifice exemptions or tax deductions for EV loan or lease costs available to all income earners — so the tax benefit goes to people who can\'t salary sacrifice too', checked: false },
+      { id: 'top20',     label: 'Fund a targeted incentive for the 20% of drivers who drive the most — if these drivers switched to electric first, we\'d cut transport emissions by 50%', checked: true },
+      { id: 'loans',     label: 'Offer 0% loans of up to $20,000 to make new EVs more affordable for everyday Australians', checked: false },
+      { id: 'ebike',     label: 'Offer a full tax deduction for e-bike purchases', checked: true },
+      { id: 'transit',   label: 'Allow a tax deduction for public transport expenses for work travel', checked: true },
+      { id: 'charging',  label: 'Require workplaces that provide employee parking to install basic EV charging points by 2030 and make it easy to charge from cheap solar', checked: true },
+    ];
+
+    const ministers = [
+      { name: 'Prime Minister Anthony Albanese MP', role: 'Prime Minister', email: 'A.Albanese.MP@aph.gov.au', checked: true },
+      { name: 'Treasurer Jim Chalmers MP', role: 'Treasurer', email: 'jim.chalmers.mp@aph.gov.au', checked: true },
+      { name: 'Minister Chris Bowen MP', role: 'Minister for Climate Change and Energy', email: 'Chris.Bowen.MP@aph.gov.au', checked: true },
+    ];
+
+    const actionState = {
+      postcode: '',
+      mpName: '',
+      mpEmail: '',
+      mpElectorate: '',
+      mpLookupDone: false,
+      userName: '',
+      userEmail: '',
+      showPreview: false,
     };
 
     // ─── Helpers ──────────────────────────────────────────────────────────────
     function lookupEff() {
-      const clampedYear = Math.max(1996, Math.min(2024, state.year));
       const table = fuelOptions[state.fuelIdx].isDiesel ? dieselTable : petrolTable;
-      return table[clampedYear][state.typeIdx];
+      return table[state.year][state.typeIdx];
     }
 
     function petrolEff() { return lookupEff(); }
@@ -757,7 +1003,7 @@
     }
 
     function displayUnit(row) {
-      return row.fuelType === 'petrol' ? '¢ / L' : '¢ / L eq';
+      return row.fuelType === 'petrol' ? '¢ per L' : '¢ per \'electric\' L';
     }
 
     // ─── Price spin-up animation ────────────────────────────────────────────
@@ -859,7 +1105,7 @@
               <div class="label-unit">${displayUnit(row)}</div>
             </div>
             <div class="led-display">
-              <span class="led-digits ${colorClass}" ${isEv ? 'style="visibility:hidden"' : ''}>${formatLed(val)}</span>
+              <span class="led-digits ${colorClass}" ${isEv && introRunning ? 'style="visibility:hidden"' : ''}>${formatLed(val)}</span>
             </div>
           </div>
         `;
@@ -924,9 +1170,7 @@
       const vt = vtypes[state.typeIdx];
       const fo = fuelOptions[state.fuelIdx];
 
-      // Year range: 1996 to 2024
-      const years = [];
-      for (let y = 2024; y >= 1996; y--) years.push(y);
+      // Year ranges
 
       // ── Savings calculation ──
       const kmWeek = kmOptions[state.kmIdx].km ?? state.customKm;
@@ -941,8 +1185,8 @@
 
       const kwhYear = kmYear * evEff() / 100;
       const fastPct = 0.05;
-      const gridPct = state.hasSolar ? 0.25 : 0.95;
-      const solarPct = state.hasSolar ? 0.70 : 0.00;
+      const gridPct = state.solarMode === 'high' ? 0.25 : state.solarMode === 'low' ? 0.60 : 0.95;
+      const solarPct = state.solarMode === 'high' ? 0.70 : state.solarMode === 'low' ? 0.35 : 0.00;
       const evCostYear = kwhYear * (
         fastPct * fastPrice + gridPct * gridPrice + solarPct * solarPrice
       ) / 100;
@@ -968,8 +1212,8 @@
           made in 
           <span class="rough-inline-wrap" data-rough="year">
             <select class="hero-inline-select" onchange="setYear(this.value)">
-              ${years.map(y =>
-                `<option value="${y}"${y === state.year ? ' selected' : ''}>${y}</option>`
+              ${yearRanges.map(r =>
+                `<option value="${r.value}"${r.value === state.year ? ' selected' : ''}>${r.label}</option>`
               ).join('')}
             </select>
             <svg class="rough-box-svg"></svg>
@@ -1010,10 +1254,12 @@
         </p>
 
         <p class="hero-text" style="margin-top: 16px;">
+          I could charge from my own solar:
           <span class="rough-inline-wrap" data-rough="solar">
             <select class="hero-inline-select" onchange="setSolar(this.value)">
-              <option value="true"${state.hasSolar ? ' selected' : ''}>I've got solar at home</option>
-              <option value="false"${!state.hasSolar ? ' selected' : ''}>No solar at my place</option>
+              <option value="high"${state.solarMode === 'high' ? ' selected' : ''}>Lots, car is often at home</option>
+              <option value="low"${state.solarMode === 'low' ? ' selected' : ''}>Sometimes, but car's out during the day</option>
+              <option value="none"${state.solarMode === 'none' ? ' selected' : ''}>Never, can't use my own solar</option>
             </select>
             <svg class="rough-box-svg"></svg>
           </span>
@@ -1026,10 +1272,27 @@
           <p class="hero-eff" style="font-size: 12px; color: #888;">e.g. ${vt.evExamples}</p>
         </div>
 
+        <div class="fillup-compare" style="margin-top: 20px; padding: 16px 0;">
+          <div style="display: flex; gap: 16px; align-items: stretch;">
+            <div class="fillup-card" style="flex: 1; padding: 16px; text-align: center; position: relative; overflow: visible;">
+              <div style="font-size: 13px; font-weight: 400; color: #555; margin-bottom: 6px;">Your next tank of fuel</div>
+              <div style="font-size: 34px; font-weight: 700; color: #991100;">${fmt$(vt.tankL * 0.8 * fuelPrice / 100)}</div>
+              <div style="font-size: 11px; color: #777; margin-top: 4px;">${Math.round(vt.tankL * 0.8)}L at ${(fuelPrice / 100).toFixed(2)}/L</div>
+              <svg class="rough-box-svg fillup-rough" style="z-index: 1;"></svg>
+            </div>
+            <div class="fillup-card" style="flex: 1; padding: 16px; text-align: center; position: relative; overflow: visible;">
+              <div style="font-size: 13px; font-weight: 400; color: #555; margin-bottom: 6px;">Filling up an EV instead</div>
+              <div style="font-size: 34px; font-weight: 700; color: #0d6e2d;">${fmt$(vt.battKwh * 0.8 * (fastPct * fastPrice + gridPct * gridPrice + solarPct * solarPrice) / 100)}</div>
+              <div style="font-size: 11px; color: #777; margin-top: 4px;">${Math.round(vt.battKwh * 0.8)} kWh blended rate</div>
+              <svg class="rough-box-svg fillup-rough" style="z-index: 1;"></svg>
+            </div>
+          </div>
+        </div>
+
         <div class="savings-box">
           <div class="savings-title">Yearly fuel cost</div>
           <div class="savings-row">
-            <span class="label">${fuelLabel} (${state.year} ${vt.label.toLowerCase()})</span>
+            <span class="label">${fuelLabel} (${yearRanges.find(r => r.value === state.year).label} ${vt.label[0].toLowerCase() + vt.label.slice(1)})</span>
             <span class="amount">${fmt$(fuelCostYear)}</span>
           </div>
           <div class="savings-row">
@@ -1046,6 +1309,84 @@
             EV mix: ${Math.round(fastPct*100)}% fast charger, ${Math.round(gridPct*100)}% grid, ${Math.round(solarPct*100)}% solar.
           </div>
           <svg id="roughSavingsBox" class="rough-box-svg"></svg>
+        </div>
+
+      `;
+
+      document.getElementById('actionPanel').innerHTML = `
+        <div class="action-section">
+          <h2 class="action-heading">Tell your MP you want action on EVs</h2>
+          <p class="action-subtext">
+            You could save <strong>${fmt$(savingsYear)} a year</strong>. Ask your representatives to support
+            policies that make it easier for all Australians to go electric.
+          </p>
+
+          <div class="action-field">
+            <label>Your name</label>
+            <input type="text" id="actionName" value="${actionState.userName}"
+              placeholder="e.g. Alex Smith" oninput="actionState.userName = this.value; updateEmailPreview()">
+          </div>
+
+          <div class="action-field">
+            <label>Your email</label>
+            <input type="email" id="actionEmail" value="${actionState.userEmail}"
+              placeholder="alex@example.com" oninput="actionState.userEmail = this.value; updateEmailPreview()">
+          </div>
+
+          <div class="action-field">
+            <label>Your postcode</label>
+            <input type="text" inputmode="numeric" pattern="[0-9]{4}" id="actionPostcode" value="${actionState.postcode}"
+              placeholder="e.g. 2000" style="width: 120px;"
+              oninput="actionState.postcode = this.value"
+              onkeydown="if(event.key==='Enter') lookupMP()">
+            <button class="action-btn secondary" onclick="lookupMP()" style="padding: 6px 14px; font-size: 13px; margin-left: 8px; vertical-align: middle;">
+              Find my MP
+            </button>
+            <div class="mp-result" id="mpResult">
+              ${actionState.mpLookupDone && !actionState.mpName
+                  ? 'Could not find MP. <a href="https://www.aph.gov.au/Senators_and_Members/Members" target="_blank">Look up manually</a>'
+                  : ''}
+            </div>
+          </div>
+
+          <div class="recipients-list" id="recipientsList">
+            <strong style="font-size: 12px; letter-spacing: 0.05em; text-transform: uppercase; color: #444;">Your email will go to:</strong><br>
+            ${actionState.mpName
+              ? `<div class="recipient"><span class="recipient-check">✓</span> <strong>The Hon ${actionState.mpName} MP</strong> (your MP${actionState.mpElectorate ? ', ' + actionState.mpElectorate : ''})</div>`
+              : '<div class="recipient" style="color: #888; font-style: italic;">Enter your postcode above to add your local MP</div>'}
+            ${ministers.map((m, i) => `
+              <div class="recipient">
+                <input type="checkbox" id="minister${i}" ${m.checked ? 'checked' : ''}
+                  onchange="ministers[${i}].checked = this.checked; updateEmailPreview()"
+                  style="margin-right: 6px; vertical-align: middle;">
+                <label for="minister${i}" style="cursor: pointer;">${m.name} (${m.role})</label>
+              </div>
+            `).join('')}
+          </div>
+
+          <div style="margin-bottom: 16px;">
+            <strong style="font-size: 12px; letter-spacing: 0.05em; text-transform: uppercase; color: #444;">I want to call for:</strong>
+            <ul class="policy-list" style="margin-top: 8px;">
+              ${policies.map((p, i) => `
+                <li>
+                  <input type="checkbox" id="policy${i}" ${p.checked ? 'checked' : ''}
+                    onchange="policies[${i}].checked = this.checked; updateEmailPreview()">
+                  <label for="policy${i}" style="cursor: pointer;">${p.label}</label>
+                </li>
+              `).join('')}
+            </ul>
+          </div>
+
+          <div id="emailPreview" class="email-preview">${composeEmail(savingsYear)}</div>
+
+          <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+            <a id="mailtoLink" class="action-btn" href="${buildMailto(savingsYear)}" style="text-align: center;">
+              Open in my email app
+            </a>
+            <button class="action-btn secondary" onclick="copyEmail()">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: -2px; margin-right: 4px;"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Copy email text
+            </button>
+          </div>
         </div>
 
       `;
@@ -1069,6 +1410,22 @@
         const rc = rough.svg(svg);
         svg.appendChild(rc.rectangle(2, 2, w - 4, h - 4, {
           stroke: '#4a00c3', strokeWidth: 1.5, roughness: 1.5, bowing: 1.5,
+        }));
+      });
+
+      // Fillup comparison cards
+      document.querySelectorAll('.fillup-card').forEach(card => {
+        const svg = card.querySelector('.fillup-rough');
+        if (!svg) return;
+        const w = card.offsetWidth;
+        const h = card.offsetHeight;
+        svg.setAttribute('width', w);
+        svg.setAttribute('height', h);
+        svg.innerHTML = '';
+        const rc = rough.svg(svg);
+        const isEv = card.querySelector('div').textContent.includes('EV');
+        svg.appendChild(rc.rectangle(2, 2, w - 4, h - 4, {
+          stroke: isEv ? '#0d6e2d' : '#991100', strokeWidth: 1.8, roughness: 2, bowing: 1.5,
         }));
       });
 
@@ -1120,7 +1477,7 @@
     }
 
     function setYear(y) {
-      state.year = parseInt(y);
+      state.year = y;
       rebuildSign();
       renderConfig();
     }
@@ -1145,7 +1502,7 @@
     }
 
     function setSolar(val) {
-      state.hasSolar = val === 'true';
+      state.solarMode = val;
       renderConfig();
     }
 
@@ -1161,11 +1518,189 @@
       if (!isNaN(v) && v >= 0) { fuelRows[i].rawPrice = v; rebuildSign(); renderConfig(); }
     }
 
+    // ─── Email composition ────────────────────────────────────────────────────
+    function composeEmail(savingsYear) {
+      const vt = vtypes[state.typeIdx];
+      const fo = fuelOptions[state.fuelIdx];
+      const name = actionState.userName || '[Your name]';
+      const postcode = actionState.postcode || '[your postcode]';
+      const fmt$ = (v) => '$' + Math.round(v).toLocaleString();
+
+      // Build greeting from selected recipients
+      const addressees = [];
+      if (actionState.mpName) addressees.push('The Hon ' + actionState.mpName + ' MP');
+      ministers.filter(m => m.checked).forEach(m => addressees.push(m.name));
+      let greeting;
+      if (addressees.length === 0) greeting = 'To whom it may concern';
+      else if (addressees.length === 1) greeting = `Dear ${addressees[0]}`;
+      else greeting = `Dear ${addressees.slice(0, -1).join(', ')} and ${addressees[addressees.length - 1]}`;
+
+      const selectedPolicies = policies.filter(p => p.checked);
+      const location = actionState.mpElectorate
+        ? `the electorate of ${actionState.mpElectorate}`
+        : `postcode ${postcode}`;
+
+      let body = `${greeting},
+
+My name is ${name} and I live in ${location}. I drive a ${vt.label[0].toLowerCase() + vt.label.slice(1)} and I've worked out that I could save ${fmt$(savingsYear)} a year by switching to an electric vehicle.
+
+I'm writing to ask you to support policies that help all Australians access cleaner, cheaper transport:\n`;
+
+      selectedPolicies.forEach(p => {
+        body += `\n• ${p.label}`;
+      });
+
+      body += `\n
+These savings would make a real difference to my household and many others across Australia. The transition to electric vehicles is an opportunity to cut emissions and reduce the cost of living at the same time.
+
+I'd welcome the chance to hear your position on these issues.
+
+Kind regards,
+${name}${actionState.userEmail ? '\n' + actionState.userEmail : ''}`;
+
+      return body;
+    }
+
+    function buildMailto(savingsYear) {
+      const recipients = [];
+      // Add MP email if we found one
+      if (actionState.mpEmail) recipients.push(actionState.mpEmail);
+      // Only include checked ministers
+      ministers.filter(m => m.checked).forEach(m => recipients.push(m.email));
+
+      const subject = encodeURIComponent('Support for Australians switching to electric vehicles');
+      const body = encodeURIComponent(composeEmail(savingsYear));
+      const to = recipients.join(',');
+
+      return `mailto:${to}?subject=${subject}&body=${body}`;
+    }
+
+    function updateEmailPreview() {
+      const vt = vtypes[state.typeIdx];
+      const fo = fuelOptions[state.fuelIdx];
+      const kmWeek = kmOptions[state.kmIdx].km ?? state.customKm;
+      const kmYear = kmWeek * 52;
+      const fuelPrice = fuelRows.find(r => r.name === fo.rowName).rawPrice;
+      const fastPrice = fuelRows.find(r => r.name === 'Fast Charger').rawPrice;
+      const gridPrice = fuelRows.find(r => r.name === 'Charge from Grid').rawPrice;
+      const solarPrice = fuelRows.find(r => r.name === 'Solar Power').rawPrice;
+      const litresYear = kmYear * petrolEff() / 100;
+      const fuelCostYear = litresYear * fuelPrice / 100;
+      const kwhYear = kmYear * evEff() / 100;
+      const fastPct = 0.05;
+      const gridPct = state.solarMode === 'high' ? 0.25 : state.solarMode === 'low' ? 0.60 : 0.95;
+      const solarPct = state.solarMode === 'high' ? 0.70 : state.solarMode === 'low' ? 0.35 : 0.00;
+      const evCostYear = kwhYear * (fastPct * fastPrice + gridPct * gridPrice + solarPct * solarPrice) / 100;
+      const savingsYear = fuelCostYear - evCostYear;
+
+      const preview = document.getElementById('emailPreview');
+      const mailtoLink = document.getElementById('mailtoLink');
+      if (preview) preview.textContent = composeEmail(savingsYear);
+      if (mailtoLink) mailtoLink.href = buildMailto(savingsYear);
+    }
+
+    function lookupMP() {
+      const input = document.getElementById('actionPostcode');
+      if (input) actionState.postcode = input.value;
+      const postcode = actionState.postcode;
+      if (!postcode || postcode.length !== 4) {
+        document.getElementById('mpResult').innerHTML = 'Please enter a 4-digit postcode.';
+        return;
+      }
+
+      // Use embedded postcode → electorate → MP data
+      const electorates = typeof pcToElec !== 'undefined' ? pcToElec[postcode] : null;
+      if (!electorates || electorates.length === 0) {
+        actionState.mpLookupDone = true;
+        document.getElementById('mpResult').innerHTML =
+          `Couldn't find that postcode. <a href="https://www.aph.gov.au/Senators_and_Members/Members" target="_blank">Look up your MP on aph.gov.au</a>`;
+        return;
+      }
+
+      if (electorates.length === 1) {
+        // Single electorate — resolve immediately
+        const elec = electorates[0];
+        const info = typeof elecToMp !== 'undefined' ? elecToMp[elec] : null;
+        if (info) {
+          actionState.mpName = info.mp;
+          actionState.mpEmail = info.email;
+          actionState.mpElectorate = elec;
+          actionState.mpLookupDone = true;
+          document.getElementById('mpResult').innerHTML = '';
+          updateRecipientsList();
+          updateEmailPreview();
+        }
+      } else {
+        // Multiple electorates for this postcode — let user pick
+        actionState.mpLookupDone = true;
+        const options = electorates.map(e => {
+          const info = elecToMp[e];
+          return info ? `<option value="${e}">${e} — ${info.mp}</option>` : `<option value="${e}">${e}</option>`;
+        }).join('');
+        document.getElementById('mpResult').innerHTML =
+          `This postcode covers multiple electorates:
+          <br><select style="margin-top: 6px; font-family: Roboto, sans-serif; font-size: 14px; padding: 6px 10px; border: 1px solid #ccc; border-radius: 6px;"
+            onchange="selectElectorate(this.value)">
+            <option value="">Choose your electorate…</option>
+            ${options}
+          </select>`;
+      }
+    }
+
+    function selectElectorate(elec) {
+      if (!elec) return;
+      const info = typeof elecToMp !== 'undefined' ? elecToMp[elec] : null;
+      if (info) {
+        actionState.mpName = info.mp;
+        actionState.mpEmail = info.email;
+        actionState.mpElectorate = elec;
+        updateRecipientsList();
+        updateEmailPreview();
+      }
+    }
+
+    function updateRecipientsList() {
+      const el = document.getElementById('recipientsList');
+      if (!el) return;
+      el.innerHTML = `
+        <strong style="font-size: 12px; letter-spacing: 0.05em; text-transform: uppercase; color: #444;">Your email will go to:</strong><br>
+        ${actionState.mpName
+          ? `<div class="recipient"><span class="recipient-check">✓</span> <strong>The Hon ${actionState.mpName} MP</strong> (your MP${actionState.mpElectorate ? ', ' + actionState.mpElectorate : ''})</div>`
+          : '<div class="recipient" style="color: #888; font-style: italic;">Enter your postcode above to add your local MP</div>'}
+        ${ministers.map((m, i) => `
+          <div class="recipient">
+            <input type="checkbox" id="minister${i}" ${m.checked ? 'checked' : ''}
+              onchange="ministers[${i}].checked = this.checked; updateEmailPreview()"
+              style="margin-right: 6px; vertical-align: middle;">
+            <label for="minister${i}" style="cursor: pointer;">${m.name} (${m.role})</label>
+          </div>
+        `).join('')}
+      `;
+    }
+
+    function copyEmail() {
+      const preview = document.getElementById('emailPreview');
+      if (preview) {
+        const recipients = [];
+        if (actionState.mpEmail) recipients.push(actionState.mpEmail);
+        ministers.filter(m => m.checked).forEach(m => recipients.push(m.email));
+        const to = recipients.join(', ');
+        const subject = 'Support for Australians switching to electric vehicles';
+        const text = `To: ${to}\nSubject: ${subject}\n\n${preview.textContent}`;
+        navigator.clipboard.writeText(text).then(() => {
+          const btn = event.target;
+          const orig = btn.textContent;
+          btn.textContent = 'Copied!';
+          setTimeout(() => btn.textContent = orig, 2000);
+        });
+      }
+    }
+
     // ─── Render prices panel (under the sign) ───────────────────────────────
     function renderPrices() {
       document.getElementById('pricesPanel').innerHTML = `
         <h3 class="prices-toggle" onclick="togglePrices()">
-          Energy Price Assumptions <span class="arrow">&#9654;</span>
+          Edit Energy Price Assumptions <span class="arrow">&#9654;</span>
         </h3>
         <div id="pricesBody" class="prices-body">
           ${fuelRows.map((row, i) => `
@@ -1186,7 +1721,47 @@
       `;
     }
 
+    // Redraw rough boxes on resize
+    let resizeTimer;
+    window.addEventListener('resize', () => {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(drawRoughBox, 150);
+    });
+
     // ─── Boot ─────────────────────────────────────────────────────────────────
+    // Load MP postcode data asynchronously
+    fetch('mp-data.json')
+      .then(r => r.json())
+      .then(data => {
+        window.pcToElec = data.pcToElec || {};
+        window.elecToMp = data.elecToMp || {};
+      })
+      .catch(e => console.warn('MP lookup data not available:', e));
+
+    // Load admin config overrides (prices, ministers, policies)
+    fetch('admin-config.json')
+      .then(r => { if (!r.ok) throw new Error('not found'); return r.json(); })
+      .then(cfg => {
+        if (cfg.prices) {
+          const ledColors = { 'Fast Charger': 'led-blue', 'Charge from Grid': 'led-teal', 'Solar Power': 'led-green', 'Solar Sharer (3 hrs free)': 'led-green' };
+          cfg.prices.forEach(p => {
+            const row = fuelRows.find(r => r.name === p.name);
+            if (row) row.rawPrice = p.price;
+          });
+          rebuildSign();
+        }
+        if (cfg.ministers) {
+          ministers.length = 0;
+          cfg.ministers.forEach(m => ministers.push(m));
+        }
+        if (cfg.policies) {
+          policies.length = 0;
+          cfg.policies.forEach(p => policies.push({ id: p.id || '', label: p.text || p.label, checked: p.checked }));
+        }
+        renderConfig();
+      })
+      .catch(() => {}); // No admin config, use defaults
+
     buildSign();
     renderConfig();
     renderPrices();
