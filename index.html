@@ -406,7 +406,7 @@
     .hero-eff {
       font-size: 14px;
       font-weight: 300;
-      color: #555;
+      color: #444;
       margin-bottom: 4px;
     }
 
@@ -476,7 +476,7 @@
     .price-entry .entry-label .raw-unit {
       display: block;
       font-size: 9px;
-      color: #888;
+      color: #666;
       letter-spacing: 0.05em;
     }
 
@@ -502,7 +502,7 @@
 
     .config-note {
       font-size: 11px;
-      color: #777;
+      color: #555;
       margin-top: 14px;
       line-height: 1.55;
       font-style: italic;
@@ -510,7 +510,7 @@
 
     .config-explainer {
       font-size: 11px;
-      color: #777;
+      color: #555;
       line-height: 1.5;
       margin-top: 8px;
     }
@@ -563,7 +563,7 @@
 
     .savings-row .label {
       font-weight: 300;
-      color: #555;
+      color: #444;
     }
 
     .savings-row .amount {
@@ -590,7 +590,7 @@
 
     .savings-breakdown {
       font-size: 10px;
-      color: #888;
+      color: #555;
       margin-top: 8px;
       line-height: 1.5;
     }
@@ -626,17 +626,30 @@
       max-width: 800px;
       min-width: 0;
       overflow: hidden;
-      margin: 0 auto;
+      margin: 20px auto 0;
+      padding: 36px 40px 40px;
       font-family: 'Roboto', sans-serif;
       font-weight: 300;
       color: #333;
       font-size: 13px;
+      border-radius: 0;
+      background:
+        repeating-linear-gradient(
+          0deg,
+          transparent,
+          transparent 27px,
+          rgba(120,120,140,0.07) 27px,
+          rgba(120,120,140,0.07) 28px
+        ),
+        linear-gradient(135deg, #f5f0e8 0%, #ede7db 30%, #f2ece2 60%, #e8e2d6 100%);
+      box-shadow:
+        0 1px 4px rgba(0,0,0,0.08),
+        inset 0 1px 0 rgba(255,255,255,0.6);
     }
 
     /* ── Take Action section ─────────────────────────────────── */
     .action-section {
-      padding-top: 20px;
-      border-top: 1px solid rgba(0,0,0,0.08);
+      padding-top: 0;
     }
 
     .action-heading {
@@ -801,7 +814,7 @@
       }
       .sign-face { width: min(290px, 80vw); }
       .config-panel { width: 100%; max-width: 400px; }
-      .action-panel { max-width: 100%; }
+      .action-panel { max-width: 100%; padding: 24px 20px 28px; }
     }
 
   </style>
@@ -1269,21 +1282,21 @@
           <p class="ev-equiv-label">
             A comparable EV uses about <strong>${evEff()} kWh / 100km</strong>
           </p>
-          <p class="hero-eff" style="font-size: 12px; color: #888;">e.g. ${vt.evExamples}</p>
+          <p class="hero-eff" style="font-size: 12px; color: #555;">e.g. ${vt.evExamples}</p>
         </div>
 
         <div class="fillup-compare" style="margin-top: 20px; padding: 16px 0;">
           <div style="display: flex; gap: 16px; align-items: stretch;">
             <div class="fillup-card" style="flex: 1; padding: 16px; text-align: center; position: relative; overflow: visible;">
-              <div style="font-size: 13px; font-weight: 400; color: #555; margin-bottom: 6px;">Your next tank of fuel</div>
+              <div style="font-size: 13px; font-weight: 400; color: #333; margin-bottom: 6px;">Your next tank of fuel</div>
               <div style="font-size: 34px; font-weight: 700; color: #991100;">${fmt$(vt.tankL * 0.8 * fuelPrice / 100)}</div>
-              <div style="font-size: 11px; color: #777; margin-top: 4px;">${Math.round(vt.tankL * 0.8)}L at ${(fuelPrice / 100).toFixed(2)}/L</div>
+              <div style="font-size: 11px; color: #555; margin-top: 4px;">${Math.round(vt.tankL * 0.8)}L at ${(fuelPrice / 100).toFixed(2)}/L</div>
               <svg class="rough-box-svg fillup-rough" style="z-index: 1;"></svg>
             </div>
             <div class="fillup-card" style="flex: 1; padding: 16px; text-align: center; position: relative; overflow: visible;">
-              <div style="font-size: 13px; font-weight: 400; color: #555; margin-bottom: 6px;">Filling up an EV instead</div>
+              <div style="font-size: 13px; font-weight: 400; color: #333; margin-bottom: 6px;">Filling up an EV instead</div>
               <div style="font-size: 34px; font-weight: 700; color: #0d6e2d;">${fmt$(vt.battKwh * 0.8 * (fastPct * fastPrice + gridPct * gridPrice + solarPct * solarPrice) / 100)}</div>
-              <div style="font-size: 11px; color: #777; margin-top: 4px;">${Math.round(vt.battKwh * 0.8)} kWh blended rate</div>
+              <div style="font-size: 11px; color: #555; margin-top: 4px;">${Math.round(vt.battKwh * 0.8)} kWh blended rate</div>
               <svg class="rough-box-svg fillup-rough" style="z-index: 1;"></svg>
             </div>
           </div>
@@ -1353,7 +1366,7 @@
             <strong style="font-size: 12px; letter-spacing: 0.05em; text-transform: uppercase; color: #444;">Your email will go to:</strong><br>
             ${actionState.mpName
               ? `<div class="recipient"><span class="recipient-check">✓</span> <strong>The Hon ${actionState.mpName} MP</strong> (your MP${actionState.mpElectorate ? ', ' + actionState.mpElectorate : ''})</div>`
-              : '<div class="recipient" style="color: #888; font-style: italic;">Enter your postcode above to add your local MP</div>'}
+              : '<div class="recipient" style="color: #777; font-style: italic;">Enter your postcode above to add your local MP</div>'}
             ${ministers.map((m, i) => `
               <div class="recipient">
                 <input type="checkbox" id="minister${i}" ${m.checked ? 'checked' : ''}
@@ -1392,7 +1405,10 @@
       `;
 
       // Draw rough.js box around the select
-      requestAnimationFrame(drawRoughBox);
+      requestAnimationFrame(() => {
+        drawRoughBox();
+        observeRoughTargets();
+      });
     }
 
     function drawRoughBox() {
@@ -1666,7 +1682,7 @@ ${name}${actionState.userEmail ? '\n' + actionState.userEmail : ''}`;
         <strong style="font-size: 12px; letter-spacing: 0.05em; text-transform: uppercase; color: #444;">Your email will go to:</strong><br>
         ${actionState.mpName
           ? `<div class="recipient"><span class="recipient-check">✓</span> <strong>The Hon ${actionState.mpName} MP</strong> (your MP${actionState.mpElectorate ? ', ' + actionState.mpElectorate : ''})</div>`
-          : '<div class="recipient" style="color: #888; font-style: italic;">Enter your postcode above to add your local MP</div>'}
+          : '<div class="recipient" style="color: #777; font-style: italic;">Enter your postcode above to add your local MP</div>'}
         ${ministers.map((m, i) => `
           <div class="recipient">
             <input type="checkbox" id="minister${i}" ${m.checked ? 'checked' : ''}
@@ -1721,12 +1737,24 @@ ${name}${actionState.userEmail ? '\n' + actionState.userEmail : ''}`;
       `;
     }
 
-    // Redraw rough boxes on resize
-    let resizeTimer;
-    window.addEventListener('resize', () => {
-      clearTimeout(resizeTimer);
-      resizeTimer = setTimeout(drawRoughBox, 150);
+    // Redraw rough boxes only when observed elements actually change size
+    const roughObserver = new ResizeObserver(entries => {
+      // Debounce: only redraw once per frame
+      if (!roughObserver._pending) {
+        roughObserver._pending = true;
+        requestAnimationFrame(() => {
+          roughObserver._pending = false;
+          drawRoughBox();
+        });
+      }
     });
+    // Observe the containers whose size changes on layout shift
+    function observeRoughTargets() {
+      roughObserver.disconnect();
+      document.querySelectorAll('.hero-vehicle-wrap, .rough-inline-wrap, .fillup-card, .savings-box, .savings-row.total').forEach(el => {
+        roughObserver.observe(el);
+      });
+    }
 
     // ─── Boot ─────────────────────────────────────────────────────────────────
     // Load MP postcode data asynchronously
