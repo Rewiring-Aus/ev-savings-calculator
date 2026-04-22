@@ -1776,9 +1776,18 @@ ${name}${actionState.userEmail ? '\n' + actionState.userEmail : ''}`;
     }
 
     // ─── Iframe height reporting (for embedding in Webflow etc.) ────────────
+    let _lastReportedHeight = 0;
+    let _reportTimer = null;
     function reportHeight() {
-      const h = document.documentElement.scrollHeight;
-      window.parent.postMessage({ iframeHeight: h }, '*');
+      if (_reportTimer) return; // already scheduled
+      _reportTimer = setTimeout(() => {
+        _reportTimer = null;
+        const h = document.documentElement.scrollHeight;
+        if (h !== _lastReportedHeight) {
+          _lastReportedHeight = h;
+          window.parent.postMessage({ iframeHeight: h }, '*');
+        }
+      }, 200);
     }
     // Report on load, resize, and after any render
     window.addEventListener('load', reportHeight);
