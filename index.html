@@ -1424,6 +1424,7 @@
       requestAnimationFrame(() => {
         drawRoughBox();
         observeRoughTargets();
+        reportHeight();
       });
     }
 
@@ -1769,6 +1770,15 @@ ${name}${actionState.userEmail ? '\n' + actionState.userEmail : ''}`;
         roughObserver.observe(el);
       });
     }
+
+    // ─── Iframe height reporting (for embedding in Webflow etc.) ────────────
+    function reportHeight() {
+      const h = document.documentElement.scrollHeight;
+      window.parent.postMessage({ iframeHeight: h }, '*');
+    }
+    // Report on load, resize, and after any render
+    window.addEventListener('load', reportHeight);
+    new ResizeObserver(reportHeight).observe(document.body);
 
     // ─── Boot ─────────────────────────────────────────────────────────────────
     // Load MP postcode data asynchronously (only when action section is enabled)
