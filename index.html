@@ -967,7 +967,7 @@
       fuelIdx:  0,       // index into fuelOptions
       kmIdx:    1,        // 230km/week
       customKm: 300,      // default custom value
-      solarMode: 'high',  // 'high' = solar at home, use often | 'low' = have solar, car out | 'none' = no solar
+      solarMode: 'high',  // 'high' = mostly solar | 'low' = sometimes solar | 'none' = grid at home | 'public' = public chargers only
     };
 
     // ─── Policies & action state ───────────────────────────────────────────────
@@ -999,6 +999,15 @@
     };
 
     // ─── Helpers ──────────────────────────────────────────────────────────────
+    function chargeMix() {
+      switch (state.solarMode) {
+        case 'high':   return { fast: 0.05, grid: 0.25, solar: 0.70 };
+        case 'low':    return { fast: 0.05, grid: 0.60, solar: 0.35 };
+        case 'none':   return { fast: 0.05, grid: 0.95, solar: 0.00 };
+        case 'public': return { fast: 0.50, grid: 0.50, solar: 0.00 };
+      }
+    }
+
     function lookupEff() {
       const table = fuelOptions[state.fuelIdx].isDiesel ? dieselTable : petrolTable;
       return table[state.year][state.typeIdx];
@@ -1197,9 +1206,7 @@
       const fuelCostYear = litresYear * fuelPrice / 100;
 
       const kwhYear = kmYear * evEff() / 100;
-      const fastPct = 0.05;
-      const gridPct = state.solarMode === 'high' ? 0.25 : state.solarMode === 'low' ? 0.60 : 0.95;
-      const solarPct = state.solarMode === 'high' ? 0.70 : state.solarMode === 'low' ? 0.35 : 0.00;
+      const { fast: fastPct, grid: gridPct, solar: solarPct } = chargeMix();
       const evCostYear = kwhYear * (
         fastPct * fastPrice + gridPct * gridPrice + solarPct * solarPrice
       ) / 100;
@@ -1267,12 +1274,13 @@
         </p>
 
         <p class="hero-text" style="margin-top: 16px;">
-          I could charge from my own solar:
+          I'd usually charge
           <span class="rough-inline-wrap" data-rough="solar">
             <select class="hero-inline-select" onchange="setSolar(this.value)">
-              <option value="high"${state.solarMode === 'high' ? ' selected' : ''}>Lots, car is often at home</option>
-              <option value="low"${state.solarMode === 'low' ? ' selected' : ''}>Sometimes, but car's out during the day</option>
-              <option value="none"${state.solarMode === 'none' ? ' selected' : ''}>Never, can't use my own solar</option>
+              <option value="high"${state.solarMode === 'high' ? ' selected' : ''}>mostly from solar power at home</option>
+              <option value="low"${state.solarMode === 'low' ? ' selected' : ''}>at home, sometimes from solar</option>
+              <option value="none"${state.solarMode === 'none' ? ' selected' : ''}>at home but don't have any solar</option>
+              <option value="public"${state.solarMode === 'public' ? ' selected' : ''}>using public chargers, can't plug in at home</option>
             </select>
             <svg class="rough-box-svg"></svg>
           </span>
@@ -1319,7 +1327,7 @@
           </div>
           <div class="savings-breakdown">
             Based on ${kmYear.toLocaleString()} km/year, ${fuelLabel.toLowerCase()} at ${fuelPrice}¢/L.
-            EV mix: ${Math.round(fastPct*100)}% fast charger, ${Math.round(gridPct*100)}% grid, ${Math.round(solarPct*100)}% solar.
+            EV mix: ${[fastPct > 0 ? Math.round(fastPct*100) + '% fast charger' : '', gridPct > 0 ? Math.round(gridPct*100) + '% grid' : '', solarPct > 0 ? Math.round(solarPct*100) + '% solar' : ''].filter(Boolean).join(', ')}.
           </div>
           <svg id="roughSavingsBox" class="rough-box-svg"></svg>
         </div>
@@ -1603,9 +1611,7 @@ ${name}${actionState.userEmail ? '\n' + actionState.userEmail : ''}`;
       const litresYear = kmYear * petrolEff() / 100;
       const fuelCostYear = litresYear * fuelPrice / 100;
       const kwhYear = kmYear * evEff() / 100;
-      const fastPct = 0.05;
-      const gridPct = state.solarMode === 'high' ? 0.25 : state.solarMode === 'low' ? 0.60 : 0.95;
-      const solarPct = state.solarMode === 'high' ? 0.70 : state.solarMode === 'low' ? 0.35 : 0.00;
+      const { fast: fastPct, grid: gridPct, solar: solarPct } = chargeMix();
       const evCostYear = kwhYear * (fastPct * fastPrice + gridPct * gridPrice + solarPct * solarPrice) / 100;
       const savingsYear = fuelCostYear - evCostYear;
 
