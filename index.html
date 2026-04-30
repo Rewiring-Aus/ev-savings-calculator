@@ -810,6 +810,174 @@
       background: rgba(74,0,195,0.06);
     }
 
+    /* ── RSVP panel (full width below everything) ──────────── */
+    .rsvp-panel {
+      flex-basis: 100%;
+      max-width: 560px;
+      min-width: 0;
+      margin: 10px auto 0;
+      padding: 36px 40px 40px;
+      font-family: 'Roboto', sans-serif;
+      font-weight: 300;
+      color: #333;
+      font-size: 13px;
+      background:
+        repeating-linear-gradient(
+          0deg,
+          transparent,
+          transparent 27px,
+          rgba(120,120,140,0.07) 27px,
+          rgba(120,120,140,0.07) 28px
+        ),
+        linear-gradient(135deg, #f5f0e8 0%, #ede7db 30%, #f2ece2 60%, #e8e2d6 100%);
+      box-shadow:
+        0 1px 4px rgba(0,0,0,0.08),
+        inset 0 1px 0 rgba(255,255,255,0.6);
+    }
+
+    .rsvp-heading {
+      font-family: 'Roboto', sans-serif;
+      font-size: 22px;
+      font-weight: 700;
+      color: #222;
+      line-height: 1.2;
+      margin-bottom: 4px;
+    }
+
+    .rsvp-date {
+      font-size: 14px;
+      font-weight: 400;
+      color: #4a00c3;
+      margin-bottom: 4px;
+    }
+
+    .rsvp-subtext {
+      font-size: 14px;
+      font-weight: 300;
+      color: #555;
+      line-height: 1.5;
+      margin-bottom: 20px;
+    }
+
+    .rsvp-row {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .rsvp-field {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .rsvp-field.full {
+      flex-basis: 100%;
+    }
+
+    .rsvp-field label {
+      font-size: 12px;
+      font-weight: 500;
+      color: #444;
+      margin-bottom: 4px;
+      letter-spacing: 0.02em;
+    }
+
+    .rsvp-field input[type="text"],
+    .rsvp-field input[type="email"] {
+      font-family: 'Roboto', sans-serif;
+      font-size: 15px;
+      font-weight: 300;
+      width: 100%;
+      padding: 8px 10px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      box-sizing: border-box;
+      color: #333;
+    }
+
+    .rsvp-field input:focus {
+      outline: none;
+      border-color: #4a00c3;
+      box-shadow: 0 0 0 2px rgba(74,0,195,0.12);
+    }
+
+    .rsvp-checkbox {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 14px;
+      font-size: 13px;
+      color: #555;
+      line-height: 1.4;
+    }
+
+    .rsvp-checkbox input[type="checkbox"] {
+      width: 16px;
+      height: 16px;
+      accent-color: #4a00c3;
+      flex-shrink: 0;
+      cursor: pointer;
+    }
+
+    .rsvp-checkbox label {
+      cursor: pointer;
+    }
+
+    .rsvp-submit {
+      display: inline-block;
+      font-family: 'Roboto', sans-serif;
+      font-size: 16px;
+      font-weight: 500;
+      color: #fff;
+      background: #4a00c3;
+      border: none;
+      border-radius: 8px;
+      padding: 12px 28px;
+      cursor: pointer;
+      transition: background 0.2s;
+      margin-top: 4px;
+    }
+
+    .rsvp-submit:hover {
+      background: #3500a0;
+    }
+
+    .rsvp-submit:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .rsvp-success {
+      display: none;
+      font-size: 15px;
+      font-weight: 400;
+      color: #0d6e2d;
+      line-height: 1.5;
+      padding: 14px 0;
+    }
+
+    .rsvp-error {
+      display: none;
+      font-size: 13px;
+      font-weight: 400;
+      color: #991100;
+      line-height: 1.4;
+      margin-top: 8px;
+    }
+
+    .rsvp-badge {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 500;
+      color: #4a00c3;
+      background: rgba(74,0,195,0.08);
+      padding: 3px 8px;
+      border-radius: 4px;
+      margin-bottom: 12px;
+      letter-spacing: 0.04em;
+    }
+
     /* ── Responsive ─────────────────────────────────────────── */
     @media (max-width: 768px) {
       body {
@@ -819,6 +987,8 @@
       .sign-face { width: min(290px, 80vw); }
       .config-panel { width: 100%; max-width: 400px; }
       .action-panel { max-width: 100%; padding: 24px 20px 28px; }
+      .rsvp-panel { max-width: 100%; padding: 24px 20px 28px; }
+      .rsvp-row { flex-direction: column; gap: 14px; }
     }
 
   </style>
@@ -855,6 +1025,54 @@
 
   <!-- ── Action section (spans full width below both columns) ── -->
   <div class="action-panel" id="actionPanel" style="display: none;"></div>
+
+  <!-- ── RSVP signup form ─────────────────────────────────── -->
+  <div class="rsvp-panel" id="rsvpPanel">
+    <span class="rsvp-badge">Free · YouTube Live</span>
+    <h2 class="rsvp-heading">Live EV Q&amp;A: Ask Sarah Aubrey &amp; Chris Vanderstock Anything!</h2>
+    <div class="rsvp-date">Tuesday 6 May · 7:30 PM AEST</div>
+    <p class="rsvp-subtext">
+      Got questions about switching to an EV? Join <strong>Sarah Aubrey</strong> (Electrify This) and <strong>Chris Vanderstock</strong> (Electric Chris) live. RSVP and we'll email you the link.
+    </p>
+
+    <form id="rsvpForm" class="rsvp-form">
+      <div class="rsvp-row">
+        <div class="rsvp-field">
+          <label for="rsvp-fname">First name</label>
+          <input type="text" id="rsvp-fname" name="First-Name" placeholder="First name">
+        </div>
+        <div class="rsvp-field">
+          <label for="rsvp-lname">Last name</label>
+          <input type="text" id="rsvp-lname" name="Last-Name" placeholder="Last name">
+        </div>
+      </div>
+
+      <div class="rsvp-row">
+        <div class="rsvp-field">
+          <label for="rsvp-email">Email <span style="color: #991100;">*</span></label>
+          <input type="email" id="rsvp-email" name="Email" placeholder="you@example.com" required>
+        </div>
+        <div class="rsvp-field">
+          <label for="rsvp-postcode">Postcode</label>
+          <input type="text" id="rsvp-postcode" name="Postcode" inputmode="numeric" placeholder="e.g. 2000" maxlength="4">
+        </div>
+      </div>
+
+      <input type="hidden" name="last_event_registration" value="Live EV Q&amp;A: Ask Sarah Aubrey (Electrify This) &amp; Chris Vanderstock (Electric Chris) Anything!">
+
+      <div class="rsvp-checkbox">
+        <input type="checkbox" id="rsvp-optin" name="Checkbox" checked>
+        <label for="rsvp-optin">I want to stay updated with news, policy and research</label>
+      </div>
+
+      <button type="submit" class="rsvp-submit" id="rsvpSubmitBtn">Submit RSVP</button>
+      <div class="rsvp-error" id="rsvpError">Oops! Something went wrong. Please try again.</div>
+    </form>
+
+    <div class="rsvp-success" id="rsvpSuccess">
+      ✓ You're on the list! We'll email an event link to you.
+    </div>
+  </div>
 
   <script>
     // Feature flags — set to true (or add ?action=1 to URL) to show the "Email your MP" section
@@ -1792,6 +2010,72 @@ ${name}${actionState.userEmail ? '\n' + actionState.userEmail : ''}`;
     // Report on load, resize, and after any render
     window.addEventListener('load', reportHeight);
     new ResizeObserver(reportHeight).observe(document.body);
+
+    // ─── RSVP form submission (HubSpot Forms API — mirrors Webflow event page) ──
+    (function() {
+      const HUBSPOT_PORTAL = '442177813';
+      const HUBSPOT_FORM   = 'c1ab2f64-49e0-46d2-801f-615619b55b8c';
+      const EVENT_NAME     = 'Live EV Q&A: Ask Sarah Aubrey (Electrify This) & Chris Vanderstock (Electric Chris) Anything!';
+
+      const form = document.getElementById('rsvpForm');
+      const btn = document.getElementById('rsvpSubmitBtn');
+      const successEl = document.getElementById('rsvpSuccess');
+      const errorEl = document.getElementById('rsvpError');
+      if (!form) return;
+
+      form.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        errorEl.style.display = 'none';
+        btn.disabled = true;
+        btn.textContent = 'Please wait...';
+
+        // Match field names from the Webflow event page exactly
+        const checkbox = form.querySelector('#rsvp-optin');
+        const fields = [
+          { name: 'firstname',               value: form.querySelector('#rsvp-fname').value },
+          { name: 'lastname',                value: form.querySelector('#rsvp-lname').value },
+          { name: 'email',                   value: form.querySelector('#rsvp-email').value },
+          { name: 'zip',                     value: form.querySelector('#rsvp-postcode').value },
+          { name: 'last_event_registration', value: EVENT_NAME },
+          { name: 'comms_opt_in',            value: (checkbox && checkbox.checked) ? 'no' : 'yes' },
+        ];
+
+        // Pick up HubSpot tracking cookie if present
+        const hutk = document.cookie.split(';')
+          .map(c => c.trim())
+          .filter(c => c.startsWith('hubspotutk='))
+          .map(c => c.split('=')[1])[0] || '';
+
+        try {
+          const resp = await fetch(
+            `https://api.hsforms.com/submissions/v3/integration/submit/${HUBSPOT_PORTAL}/${HUBSPOT_FORM}`,
+            {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                fields: fields,
+                context: {
+                  hutk: hutk,
+                  pageUri: window.location.href,
+                  pageName: 'EV Savings Calculator',
+                },
+              })
+            }
+          );
+          if (resp.ok) {
+            form.style.display = 'none';
+            successEl.style.display = 'block';
+            reportHeight();
+          } else {
+            throw new Error('Server error');
+          }
+        } catch (err) {
+          errorEl.style.display = 'block';
+          btn.disabled = false;
+          btn.textContent = 'Submit RSVP';
+        }
+      });
+    })();
 
     // ─── Boot ─────────────────────────────────────────────────────────────────
     // Load MP postcode data asynchronously (only when action section is enabled)
