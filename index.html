@@ -2054,11 +2054,10 @@ ${name}${actionState.userEmail ? '\n' + actionState.userEmail : ''}`;
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({
                 fields: fields,
-                context: {
-                  hutk: hutk,
-                  pageUri: window.location.href,
-                  pageName: 'EV Savings Calculator',
-                },
+                context: Object.assign(
+                  { pageUri: window.location.href, pageName: 'EV Savings Calculator' },
+                  hutk ? { hutk: hutk } : {}
+                ),
               })
             }
           );
