@@ -2067,9 +2067,12 @@ ${name}${actionState.userEmail ? '\n' + actionState.userEmail : ''}`;
             successEl.style.display = 'block';
             reportHeight();
           } else {
-            throw new Error('Server error');
+            const errBody = await resp.text();
+            console.error('HubSpot ' + resp.status + ':', errBody);
+            throw new Error(errBody);
           }
         } catch (err) {
+          console.error('RSVP submit error:', err);
           errorEl.style.display = 'block';
           btn.disabled = false;
           btn.textContent = 'Submit RSVP';
