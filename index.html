@@ -45,6 +45,7 @@
       filter:
         drop-shadow(16px 28px 32px rgba(0,0,0,0.50))
         drop-shadow(0px  4px  6px rgba(0,0,0,0.25));
+      will-change: contents;
     }
 
     /* ── Sign face ──────────────────────────────────────────────── */
@@ -179,6 +180,11 @@
       line-height: 1;
       letter-spacing: 1px;
       animation: led-breathe 3.5s ease-in-out infinite;
+      animation-play-state: paused;     /* paused during spin-up, resumed when done */
+    }
+
+    body.intro-done .led-digits {
+      animation-play-state: running;
     }
 
     .led-dot {
@@ -1275,29 +1281,34 @@
     let evRevealPhase = false;            // true while staggering EV reveals
     let introRunning = true;              // true until entire intro sequence done
     let evRevealStarted = false;          // have we kicked off EV reveals yet
+    let lastSpinRender = 0;               // throttle: last frame timestamp we rendered
 
     function tickSpin(ts) {
       if (spinStart === null) spinStart = ts;
       const elapsed = ts - spinStart;
       const t = Math.min(elapsed / SPIN_DURATION, 1);
-      const eased = easeOutExpo(t);
-
-      fuelRows.forEach(row => {
-        if (row.fuelType !== 'petrol') return;
-        const target = row.rawPrice;
-        const base = SPIN_START + (target - SPIN_START) * eased;
-        if (t < 1) {
-          animOverrides.set(row.name, base);
-        } else {
-          animOverrides.set(row.name, target);
-        }
-      });
 
       // Kick off EV reveals at 4s, independently of petrol finishing
       if (elapsed >= EV_REVEAL_AT && !evRevealStarted) {
         evRevealStarted = true;
         flickerOnEvRows();
       }
+
+      // Throttle digit updates to ~30fps — the numbers only show 1 decimal
+      // so 60fps is invisible but doubles the text-shadow repaint cost
+      if (t < 1 && ts - lastSpinRender < 32) {
+        requestAnimationFrame(tickSpin);
+        return;
+      }
+      lastSpinRender = ts;
+
+      const eased = easeOutExpo(t);
+      fuelRows.forEach(row => {
+        if (row.fuelType !== 'petrol') return;
+        const target = row.rawPrice;
+        const base = SPIN_START + (target - SPIN_START) * eased;
+        animOverrides.set(row.name, t < 1 ? base : target);
+      });
 
       renderSign();
 
@@ -1322,6 +1333,7 @@
             setTimeout(() => {
               evRevealPhase = false;
               introRunning = false;
+              document.body.classList.add('intro-done');  // start CSS breathe animation
             }, 700);
           }
         }, i * EV_STAGGER);
@@ -1369,6 +1381,20 @@
       return val.toFixed(1).replace('.', '<span class="led-dot">.</span>');
     }
 
+    // Perf: update digit text without innerHTML when possible (avoids DOM rebuild per frame)
+    function updateDigits(digitsEl, val) {
+      const str = val.toFixed(1);
+      // Fast path: if element already has the dot span structure, just update text nodes
+      const children = digitsEl.childNodes;
+      if (children.length === 3 && children[1].nodeType === 1 && children[1].classList.contains('led-dot')) {
+        const [intPart, decPart] = str.split('.');
+        if (children[0].textContent !== intPart) children[0].textContent = intPart;
+        if (children[2].textContent !== decPart) children[2].textContent = decPart;
+      } else {
+        digitsEl.innerHTML = formatLed(val);
+      }
+    }
+
     function renderSign() {
       // If not yet built, do a full build
       if (rowElements.size === 0) { buildSign(); }
@@ -1389,8 +1415,8 @@
           // digits value updated below (safe, won't disrupt CSS animation)
         }
 
-        // Update the displayed number
-        entry.digits.innerHTML = formatLed(val);
+        // Update the displayed number (text-only update avoids innerHTML per frame)
+        updateDigits(entry.digits, val);
 
         // Update unit label (can change when user changes vehicle)
         const unitEl = entry.el.querySelector('.label-unit');
