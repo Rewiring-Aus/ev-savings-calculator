@@ -1035,11 +1035,9 @@
   <!-- ── RSVP signup form (always below everything) ────────── -->
   <div style="flex-basis:100%;height:0;margin-top:-40px;"></div>
   <div class="rsvp-panel" id="rsvpPanel">
-    <span class="rsvp-badge">Would you like to know more?</span>
-    <h2 class="rsvp-heading">Live EV Q&amp;A: Ask Sarah Aubrey &amp; Chris Vanderstock Anything!</h2>
-    <div class="rsvp-date">Tuesday 6 May · 7:30 PM AEST</div>
+    <h2 class="rsvp-heading">Stay in the loop</h2>
     <p class="rsvp-subtext">
-      Got questions about switching to an EV? Join <strong>Sarah Aubrey</strong> (Electrify This) and <strong>Chris Vanderstock</strong> (Electric Chris) live. RSVP and we'll email you the link.
+      Get updates, research and tools from Rewiring Australia to help you save money and cut emissions.
     </p>
 
     <form id="rsvpForm" class="rsvp-form">
@@ -1065,19 +1063,14 @@
         </div>
       </div>
 
-      <input type="hidden" name="last_event_registration" value="Live EV Q&amp;A: Ask Sarah Aubrey (Electrify This) &amp; Chris Vanderstock (Electric Chris) Anything!">
+      <input type="hidden" name="last_event_registration" value="EV Savings Calculator signup">
 
-      <div class="rsvp-checkbox">
-        <input type="checkbox" id="rsvp-optin" name="Checkbox" checked>
-        <label for="rsvp-optin">I want to stay updated with news, policy and research</label>
-      </div>
-
-      <button type="submit" class="rsvp-submit" id="rsvpSubmitBtn">Submit RSVP</button>
+      <button type="submit" class="rsvp-submit" id="rsvpSubmitBtn">Sign up</button>
       <div class="rsvp-error" id="rsvpError">Oops! Something went wrong. Please try again.</div>
     </form>
 
     <div class="rsvp-success" id="rsvpSuccess">
-      ✓ You're on the list! We'll email an event link to you.
+      ✓ You're signed up! We'll keep you in the loop.
     </div>
   </div>
 
@@ -2042,7 +2035,7 @@ ${name}${actionState.userEmail ? '\n' + actionState.userEmail : ''}`;
     (function() {
       const HUBSPOT_PORTAL = '442177813';
       const HUBSPOT_FORM   = 'c1ab2f64-49e0-46d2-801f-615619b55b8c';
-      const EVENT_NAME     = 'Live EV Q&A: Ask Sarah Aubrey (Electrify This) & Chris Vanderstock (Electric Chris) Anything!';
+      const EVENT_NAME     = 'EV Savings Calculator signup';
 
       const form = document.getElementById('rsvpForm');
       const btn = document.getElementById('rsvpSubmitBtn');
@@ -2056,15 +2049,13 @@ ${name}${actionState.userEmail ? '\n' + actionState.userEmail : ''}`;
         btn.disabled = true;
         btn.textContent = 'Please wait...';
 
-        // Match field names from the Webflow event page exactly
-        const checkbox = form.querySelector('#rsvp-optin');
         const fields = [
           { name: 'firstname',               value: form.querySelector('#rsvp-fname').value },
           { name: 'lastname',                value: form.querySelector('#rsvp-lname').value },
           { name: 'email',                   value: form.querySelector('#rsvp-email').value },
           { name: 'zip',                     value: form.querySelector('#rsvp-postcode').value },
           { name: 'last_event_registration', value: EVENT_NAME },
-          { name: 'comms_opt_in',            value: (checkbox && checkbox.checked) ? 'yes' : 'no' },
+          { name: 'comms_opt_in',            value: 'yes' },
         ];
 
         // Pick up HubSpot tracking cookie if present
